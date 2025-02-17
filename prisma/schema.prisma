@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model asset {
+  id       String     @id @db.Char(36)
+  acronym  String     @db.VarChar(10)
+  name     String     @db.VarChar(100)
+  isActive Boolean
+  order    order[]
+  strategy strategy[]
+}
+
+model credential {
+  id                                 String  @id @db.Char(36)
+  userId                             String  @unique(map: "userId") @db.Char(36)
+  apiKey                             String  @db.VarChar(255)
+  secretKey                          String  @db.VarChar(255)
+  isActive                           Boolean
+  user_credential_userIdTouser       user    @relation("credential_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Credential_User")
+  user_user_credentialIdTocredential user[]  @relation("user_credentialIdTocredential")
+}
+
+model order {
+  id          String    @id @db.Char(36)
+  assetId     String    @db.Char(36)
+  quantity    String    @db.VarChar(100)
+  userId      String    @db.Char(36)
+  strategyId  String    @db.Char(36)
+  openDate    DateTime  @db.DateTime(0)
+  closeDate   DateTime? @db.DateTime(0)
+  openPrice   Int
+  closePrice  Int?
+  typeOrder   String    @db.VarChar(10)
+  targetPrice Int
+  stopPrice   Int
+  result      Int
+  status      String    @db.VarChar(10)
+  isActive    Boolean
+  asset       asset     @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_Asset")
+  strategy    strategy  @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_Strategy")
+  user        user      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_User")
+
+  @@index([assetId], map: "FK_Order_Asset")
+  @@index([strategyId], map: "FK_Order_Strategy")
+  @@index([userId], map: "FK_Order_User")
+}
+
+model strategy {
+  id             String  @id @db.Char(36)
+  assetId        String  @db.Char(36)
+  configStrategy String  @db.VarChar(255)
+  userId         String  @db.Char(36)
+  performance    Int
+  profit         Int
+  isActive       Boolean
+  order          order[]
+  asset          asset   @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_Asset")
+  user           user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_User")
+
+  @@index([assetId], map: "FK_Strategy_Asset")
+  @@index([userId], map: "FK_Strategy_User")
+}
+
+model user {
+  id                                       String      @id @db.Char(36)
+  name                                     String      @unique(map: "name") @db.VarChar(30)
+  lastName                                 String      @db.VarChar(100)
+  email                                    String      @unique(map: "email") @db.VarChar(50)
+  password                                 String      @db.VarChar(255)
+  levelUser                                String      @db.VarChar(10)
+  credentialId                             String?     @db.Char(36)
+  walletId                                 String?     @db.Char(36)
+  balance                                  Int
+  isActive                                 Boolean
+  credential_credential_userIdTouser       credential? @relation("credential_userIdTouser")
+  order                                    order[]
+  strategy                                 strategy[]
+  credential_user_credentialIdTocredential credential? @relation("user_credentialIdTocredential", fields: [credentialId], references: [id], onUpdate: NoAction, map: "FK_User_Credential")
+  wallet_user_walletIdTowallet             wallet?     @relation("user_walletIdTowallet", fields: [walletId], references: [id], onUpdate: NoAction, map: "FK_User_Wallet")
+  wallet_wallet_userIdTouser               wallet?     @relation("wallet_userIdTouser")
+
+  @@index([credentialId], map: "FK_User_Credential")
+  @@index([walletId], map: "FK_User_Wallet")
+}
+
+model wallet {
+  id                         String  @id @db.Char(36)
+  assetId                    String  @db.Char(36)
+  userId                     String  @unique(map: "userId") @db.Char(36)
+  quantity                   String  @db.VarChar(100)
+  isFavorite                 Boolean
+  isActive                   Boolean
+  user_user_walletIdTowallet user[]  @relation("user_walletIdTowallet")
+  user_wallet_userIdTouser   user    @relation("wallet_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Wallet_User")
+}
