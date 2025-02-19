@@ -7,8 +7,20 @@ import { Prisma } from '@prisma/client';
 export class UserService {
     constructor(private readonly prisma: PrismaService) {} 
 
+    /**
+     * Cria um novo usuario no banco de dados
+     * 
+     * @param data dados do usuario a ser criado
+     * @returns um objeto com os dados do usuario, exceto a senha
+     */
     async createUser(data: Prisma.UserCreateInput){
-        return this.prisma.user.create({data});
+        const newUser = this.prisma.user.create({data});
+        const { password, ...userWithoutPassword } = await newUser;
+        return userWithoutPassword;
+    }
+
+    async getUserByEmail(email: string) {
+        return this.prisma.user.findUnique({where: {email}});
     }
 
 }
