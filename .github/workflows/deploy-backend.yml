@@ -83,7 +83,7 @@ jobs:
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             docker pull richardguedesrib/tharseo-backend-app:latest
 
-      - name: SSH into Azure VM - Start New Docker Container
+      - name: SSH into Azure VM and start Docker container with env vars
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.THARSEO_BACKEND_HOST }}
@@ -91,6 +91,7 @@ jobs:
           password: ${{ secrets.THARSEO_BACKEND_PASS }}
           script: |
             docker run -d -p 8080:8080 \
-              --name tharseo-backend \
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
+              -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
               -v /home/richardguedes/tharseo/data:/app/data \
               richardguedesrib/tharseo-backend-app:latest
