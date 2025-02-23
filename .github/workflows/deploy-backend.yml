@@ -90,7 +90,7 @@ jobs:
           username: ${{ secrets.THARSEO_BACKEND_HOST_USER }}
           password: ${{ secrets.THARSEO_BACKEND_PASS }}
           script: |
-            docker run -d -p 8080:8080 \
+            docker run -d -p 8080:3000 \
               -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
               -v /home/richardguedes/tharseo/data:/app/data \
