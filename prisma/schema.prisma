@@ -73,6 +73,7 @@ model User {
   name                                     String      @db.VarChar(30)
   lastName                                 String      @db.VarChar(100)
   email                                    String      @unique(map: "email") @db.VarChar(50)
+  phone                                    String      @unique(map: "phone") @db.VarChar(11)
   password                                 String      @db.VarChar(255)
   levelUser                                String      @db.VarChar(10)
   credentialId                             String?     @db.Char(36)
