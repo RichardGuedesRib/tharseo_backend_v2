@@ -19,8 +19,24 @@ export class UserService {
         return userWithoutPassword;
     }
 
+    /**
+     * Retorna um usuário com base no email fornecido.
+     * 
+     * @param email O email do usuário para a busca.
+     * @returns Um objeto do usuário encontrado ou null se não existir.
+     */
+
     async getUserByEmail(email: string) {
         return this.prisma.user.findUnique({where: {email}});
+    }
+
+    /**
+     * Retorna todos os usuários cadastrados.
+     * 
+     * @returns Uma lista com todos os usuários cadastrados.
+     */
+    async getAllUsers() {
+        return this.prisma.user.findMany();
     }
 
 }

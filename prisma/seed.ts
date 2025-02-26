@@ -15,7 +15,7 @@ async function main() {
             name: 'Richard',
             lastName: "Guedes",
             email: 'richard@teste.com',
-            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',
+            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK', //admin@123
             phone: '11999999999',
             levelUser: "admin",
             balance: 0,
@@ -37,7 +37,7 @@ async function main() {
             name: 'Flavio',
             lastName: "Domingues",
             email: 'flavio@teste.com',
-            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',
+            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK', //admin@123
             phone: '11999999991',
             levelUser: "admin",
             balance: 0,
@@ -59,7 +59,7 @@ async function main() {
             name: 'Alberto',
             lastName: "Ribeiro",
             email: 'alberto@teste.com',
-            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',
+            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK', //admin@123
             phone: '11999999992',
             levelUser: "admin",
             balance: 0,
@@ -81,7 +81,7 @@ async function main() {
             name: 'Alessandra',
             lastName: "Sanches",
             email: 'alessandra@teste.com',
-            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',
+            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',  //admin@123
             phone: '11999999993',
             levelUser: "admin",
             balance: 0,
@@ -103,7 +103,7 @@ async function main() {
             name: 'Caio',
             lastName: "Caio",
             email: 'caio@teste.com',
-            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',
+            password: '$2b$10$4eqlLF63XHgcdy30QOpS..e32H3dSmzvwqLOIE.S2fN8yd93hGxTK',  //admin@123
             phone: '11999999994',
             levelUser: "admin",
             balance: 0,
@@ -120,14 +120,6 @@ async function main() {
         },
     });
 
-
-
-
-
-
-
-
-   
 
     console.log('Seed completed!');
 }
