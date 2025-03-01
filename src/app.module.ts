@@ -5,6 +5,7 @@ import { HealthModule } from './health/health.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
+import { BinanceModule } from './binance/binance.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { jwtConstants } from './auth/constants';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1200s' },
     }),
+    BinanceModule,
   ],
   controllers: [],
   providers: [],
