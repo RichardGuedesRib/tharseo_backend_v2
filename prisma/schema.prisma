@@ -9,12 +9,13 @@ datasource db {
 }
 
 model Asset {
-  id       String     @id @db.Char(36)
-  acronym  String     @db.VarChar(10)
+  id String @id @default(uuid()) @db.Char(36)
+  symbol   String      @db.VarChar(10)
   name     String     @db.VarChar(100)
   isActive Boolean
   order    Order[]
-  strategy Strategy[]
+  tradeflows     Tradeflow[]
+  
 }
 
 model Credential {
@@ -54,17 +55,16 @@ model Order {
 
 model Strategy {
 id String @id @default(uuid()) @db.Char(36)
-  assetId        String  @db.Char(36)
   configStrategy String  @db.VarChar(255)
   userId         String  @db.Char(36)
   performance    Int
   profit         Int
   isActive       Boolean
   order          Order[]
-  asset          Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_Asset")
+  tradeflows     Tradeflow[]
   user           User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_User")
 
-  @@index([assetId], map: "FK_Strategy_Asset")
+  
   @@index([userId], map: "FK_Strategy_User")
 }
 
@@ -77,27 +77,37 @@ model User {
   password                                 String      @db.VarChar(255)
   levelUser                                String      @db.VarChar(10)
   credentialId                             String?     @db.Char(36)
-  walletId                                 String?     @db.Char(36)
   balance                                  Int
   isActive                                 Boolean
   credential       Credential? @relation("credential_userIdTouser")
   order                                    Order[]
   strategy                                 Strategy[]
   credential_user Credential? @relation("user_credentialIdTocredential", fields: [credentialId], references: [id], onUpdate: NoAction, map: "FK_User_Credential")
-  wallet_            Wallet?     @relation("user_walletIdTowallet", fields: [walletId], references: [id], onUpdate: NoAction, map: "FK_User_Wallet")
-  wallet_user             Wallet?     @relation("wallet_userIdTouser")
+  wallets       Wallet[] @relation("UserWallet")
 
   @@index([credentialId], map: "FK_User_Credential")
-  @@index([walletId], map: "FK_User_Wallet")
 }
 
 model Wallet {
  id String @id @default(uuid()) @db.Char(36)
   assetId                    String  @db.Char(36)
-  userId                     String  @unique(map: "userId") @db.Char(36)
+  userId                     String 
   quantity                   String  @db.VarChar(100)
   isFavorite                 Boolean
   isActive                   Boolean
-  user User[]  @relation("user_walletIdTowallet")
-  user_wallet   User    @relation("wallet_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Wallet_User")
+  user       User    @relation("UserWallet", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  @@unique([userId, assetId])
+
+}
+
+
+model Tradeflow {
+  id String @id @default(uuid()) @db.Char(36)
+  assetId     String    @db.Char(36)
+  strategyId  String    @db.Char(36)
+  isActive    Boolean
+  strategy       Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TradeFlow_Strategy")
+  asset          Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_Asset")
+  @@index([assetId], map: "FK_TradeFlow_Asset")
+  @@index([strategyId], map: "FK_TradeFlow_Strategy")
 }
