@@ -3,15 +3,13 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 0');
-  await prisma.$queryRaw`TRUNCATE TABLE User;`;
-  await prisma.$queryRaw`TRUNCATE TABLE Credential;`;
-  await prisma.$queryRaw`TRUNCATE TABLE Asset;`;
-  await prisma.$queryRaw`TRUNCATE TABLE \`Order\`;`;
-  await prisma.$queryRaw`TRUNCATE TABLE Strategy;`;
-  await prisma.$queryRaw`TRUNCATE TABLE Wallet;`;
-  await prisma.$queryRaw`TRUNCATE TABLE Tradeflow;`;
-  await prisma.$executeRawUnsafe('SET FOREIGN_KEY_CHECKS = 1');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "User" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Credential" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Asset" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Order" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Strategy" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Wallet" CASCADE;');
+  await prisma.$executeRawUnsafe('TRUNCATE TABLE "Tradeflow" CASCADE;');
 
   const assetTheter = await prisma.asset.create({
     data: {

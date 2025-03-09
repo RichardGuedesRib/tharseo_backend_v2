@@ -4,38 +4,37 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Asset {
-  id String @id @default(uuid()) @db.Char(36)
-  symbol   String      @db.VarChar(10)
-  name     String     @db.VarChar(100)
-  isActive Boolean
-  order    Order[]
-  tradeflows     Tradeflow[]
-  
+  id        String     @id @default(uuid()) @db.Char(36)
+  symbol    String     @db.VarChar(10)
+  name      String     @db.VarChar(100)
+  isActive  Boolean
+  order     Order[]
+  tradeflows Tradeflow[]
 }
 
 model Credential {
-id String @id @default(uuid()) @db.Char(36)
-  userId                             String  @unique(map: "userId") @db.Char(36)
-  apiKey                             String  @db.VarChar(255)
-  secretKey                          String  @db.VarChar(255)
-  isActive                           Boolean
-  user      User    @relation("credential_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Credential_User")
-  user_credential User[]  @relation("user_credentialIdTocredential")
+  id           String  @id @default(uuid()) @db.Char(36)
+  userId       String  @unique(map: "UQ_Credential_UserId") @db.Char(36)
+  apiKey       String  @db.VarChar(255)
+  secretKey    String  @db.VarChar(255)
+  isActive     Boolean
+  user         User    @relation("credential_userIdTouser", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Credential_User")
+  user_credential User[] @relation("user_credentialIdTocredential")
 }
 
 model Order {
-  id String @id @default(uuid()) @db.Char(36)
+  id          String    @id @default(uuid()) @db.Char(36)
   assetId     String    @db.Char(36)
   quantity    String    @db.VarChar(100)
   userId      String    @db.Char(36)
   strategyId  String    @db.Char(36)
-  openDate    DateTime  @db.DateTime(0)
-  closeDate   DateTime? @db.DateTime(0)
+  openDate    DateTime  
+  closeDate   DateTime? 
   openPrice   Int
   closePrice  Int?
   typeOrder   String    @db.VarChar(10)
@@ -44,70 +43,71 @@ model Order {
   result      Int
   status      String    @db.VarChar(10)
   isActive    Boolean
-  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_Asset")
-  strategy    Strategy  @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_Strategy")
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_User")
+  asset       Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_AssetId")
+  strategy    Strategy  @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_StrategyId")
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Order_UserId")
 
-  @@index([assetId], map: "FK_Order_Asset")
-  @@index([strategyId], map: "FK_Order_Strategy")
-  @@index([userId], map: "FK_Order_User")
+  @@index([assetId], map: "IDX_Order_AssetId")
+  @@index([strategyId], map: "IDX_Order_StrategyId")
+  @@index([userId], map: "IDX_Order_UserId")
 }
 
 model Strategy {
-id String @id @default(uuid()) @db.Char(36)
-  configStrategy String  @db.VarChar(255)
-  userId         String  @db.Char(36)
+  id              String     @id @default(uuid()) @db.Char(36)
+  name           String     @db.VarChar(100)
+  description    String     @db.VarChar(255)
+  configStrategy String     @db.VarChar(255)
+  userId         String     @db.Char(36)
   performance    Int
-  profit         Int
-  isActive       Boolean
-  order          Order[]
-  tradeflows     Tradeflow[]
-  user           User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_User")
+  profit        Int
+  isActive      Boolean
+  order         Order[]
+  tradeflows    Tradeflow[]
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_UserId")
 
-  
-  @@index([userId], map: "FK_Strategy_User")
+  @@index([userId], map: "IDX_Strategy_UserId")
 }
 
 model User {
- id String @id @default(uuid()) @db.Char(36)
-  name                                     String      @db.VarChar(30)
-  lastName                                 String      @db.VarChar(100)
-  email                                    String      @unique(map: "email") @db.VarChar(50)
-  phone                                    String      @unique(map: "phone") @db.VarChar(11)
-  password                                 String      @db.VarChar(255)
-  levelUser                                String      @db.VarChar(10)
-  credentialId                             String?     @db.Char(36)
-  balance                                  Int
-  isActive                                 Boolean
-  credential       Credential? @relation("credential_userIdTouser")
-  order                                    Order[]
-  strategy                                 Strategy[]
-  credential_user Credential? @relation("user_credentialIdTocredential", fields: [credentialId], references: [id], onUpdate: NoAction, map: "FK_User_Credential")
-  wallets       Wallet[] @relation("UserWallet")
+  id         String   @id @default(uuid()) @db.Char(36)
+  name       String   @db.VarChar(30)
+  lastName   String   @db.VarChar(100)
+  email      String   @unique(map: "UQ_User_Email") @db.VarChar(50)
+  phone      String   @unique(map: "UQ_User_Phone") @db.VarChar(11)
+  password   String   @db.VarChar(255)
+  levelUser  String   @db.VarChar(10)
+  credentialId String? @db.Char(36)
+  balance    Int
+  isActive   Boolean
+  credential Credential? @relation("credential_userIdTouser")
+  order      Order[]
+  strategy   Strategy[]
+  credential_user Credential? @relation("user_credentialIdTocredential", fields: [credentialId], references: [id], onUpdate: NoAction, map: "FK_User_CredentialId")
+  wallets    Wallet[] @relation("UserWallet")
 
-  @@index([credentialId], map: "FK_User_Credential")
+  @@index([credentialId], map: "IDX_User_CredentialId")
 }
 
 model Wallet {
- id String @id @default(uuid()) @db.Char(36)
-  assetId                    String  @db.Char(36)
-  userId                     String 
-  quantity                   String  @db.VarChar(100)
-  isFavorite                 Boolean
-  isActive                   Boolean
-  user       User    @relation("UserWallet", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id          String  @id @default(uuid()) @db.Char(36)
+  assetId     String  @db.Char(36)
+  userId      String 
+  quantity    String  @db.VarChar(100)
+  isFavorite  Boolean
+  isActive    Boolean
+  user        User    @relation("UserWallet", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  
   @@unique([userId, assetId])
-
 }
 
-
 model Tradeflow {
-  id String @id @default(uuid()) @db.Char(36)
-  assetId     String    @db.Char(36)
-  strategyId  String    @db.Char(36)
+  id          String   @id @default(uuid()) @db.Char(36)
+  assetId     String   @db.Char(36)
+  strategyId  String   @db.Char(36)
   isActive    Boolean
-  strategy       Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TradeFlow_Strategy")
-  asset          Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Strategy_Asset")
-  @@index([assetId], map: "FK_TradeFlow_Asset")
-  @@index([strategyId], map: "FK_TradeFlow_Strategy")
+  strategy    Strategy @relation(fields: [strategyId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TradeFlow_StrategyId")
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_TradeFlow_AssetId")
+
+  @@index([assetId], map: "IDX_TradeFlow_AssetId")
+  @@index([strategyId], map: "IDX_TradeFlow_StrategyId")
 }
