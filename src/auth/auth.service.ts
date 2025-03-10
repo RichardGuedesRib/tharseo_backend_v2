@@ -52,7 +52,7 @@ export class AuthService {
     if (!(await bcrypt.compare(data.password, user.password))) {
       throw new UnauthorizedException('Email ou senha incorretos');
     }
-    const payload = { sub: user.id, username: user.email };
+    const payload = { sub: user.id, username: user.email, levelUser: user.levelUser, isActive: user.isActive };
     return {
       user: {
           id: user.id,

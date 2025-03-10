@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
 import { BinanceModule } from './binance/binance.module';
+import { WalletModule } from './wallet/wallet.module';
+import { AssetModule } from './asset/asset.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { BinanceModule } from './binance/binance.module';
       signOptions: { expiresIn: '1200s' },
     }),
     BinanceModule,
+    WalletModule,
+    AssetModule,
   ],
   controllers: [],
   providers: [],
