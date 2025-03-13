@@ -39,4 +39,18 @@ export class UserService {
         return this.prisma.user.findMany();
     }
 
+    /**
+     * Retorna um usuário com base no ID fornecido.
+     * 
+     * @param id O ID do usuário para a busca.
+     * @returns Um objeto do usuário encontrado ou null se não existir.
+     */
+
+    async getUserById(id: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: id }, 
+            include: { wallets: true }
+        });
+        return user;
+    }
 }

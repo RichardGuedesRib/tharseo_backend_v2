@@ -25,8 +25,8 @@ export class AssetService {
    * @param userId id do usuario que esta solicitando os ativos
    * @returns uma lista com todos os ativos cadastrados na base de dados
    */
-  findAll() {
-    return this.prisma.asset.findMany();
+  async findAll() {
+    return await this.prisma.asset.findMany();
   }
 
   
@@ -38,8 +38,8 @@ export class AssetService {
    * @returns um objeto com os dados do ativo solicitado, caso exista
    * @throws NotFoundException caso o ativo nao seja encontrado
    */
-  findOne(id: string) {
-    return this.prisma.asset.findUnique({where: {id}});
+  async findOne(id: string) {
+    return await this.prisma.asset.findUnique({where: {id}});
   }
 
   /**
@@ -50,8 +50,8 @@ export class AssetService {
    * @returns um objeto com os dados do ativo atualizado
    * @throws NotFoundException caso o ativo nao seja encontrado
    */
-  update(id: string, data: Prisma.AssetUpdateInput) {
-    return this.prisma.asset.update({where: {id}, data});
+  async update(id: string, data: Prisma.AssetUpdateInput) {
+    return await this.prisma.asset.update({where: {id}, data});
   }
 
     /**
