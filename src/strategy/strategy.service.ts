@@ -1,4 +1,4 @@
-import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { UpdateStrategyDto } from './dto/update-strategy.dto';
 import { TokenPayload } from 'src/auth/dtos/token.payload';
@@ -34,7 +34,7 @@ export class StrategyService {
       const strategy = await this.prisma.strategy.create({data: createStrategyDto});
       return strategy;       
     } catch (error) {
-      throw new BadGatewayException("Erro ao criar estrategia");
+      throw new InternalServerErrorException("Error while create strategy: " + error);
     }
   
     }
@@ -74,23 +74,48 @@ export class StrategyService {
    */
   async findOne(id: string, user: TokenPayload) {
 
-    try{
+ 
       const getUser = await this.userService.getUserById(user.userId);
       if (!getUser) {
         throw new NotFoundException('User not found');
       }
       const strategy = await this.prisma.strategy.findUnique({where: {id: id}}); 
-      if(strategy && strategy.userId !== user.userId){
+
+      if(!strategy) {
         throw new NotFoundException("Strategy not found");
       }
-      return strategy; 
-      } catch (error) {
-        throw new BadGatewayException("Erro ao buscar estrategias");
+      if(strategy && strategy.userId !== user.userId){
+        throw new UnauthorizedException("Unauthorized for this user");
       }
+      return strategy; 
+     
   }
 
-  update(id: number, updateStrategyDto: UpdateStrategyDto) {
-    return `This action updates a #${id} strategy`;
+
+  /**
+   * Atualiza uma estratégia com base no id informado.
+   * 
+   * @param id id da estratégia a ser atualizada
+   * @param updateStrategyDto dados da estratégia a serem atualizados
+   * @returns um objeto com os dados da estratégia atualizada
+   * @throws NotFoundException caso a estratégia não seja encontrada
+   * @throws InternalServerErrorException caso ocorra um erro ao atualizar a estratégia
+   */
+
+  async update(id: string, updateStrategyDto: UpdateStrategyDto, user: TokenPayload) {
+
+      const strategy = await this.prisma.strategy.findUnique({where: {id: id}}); 
+      if(!strategy){
+        throw new NotFoundException("Strategy not found");
+      }
+
+      if(strategy && strategy.userId !== user.userId){
+        throw new UnauthorizedException("Unauthorized for this user");
+      }
+      const updateStrategy = await this.prisma.strategy.update({where: {id: id}, data: updateStrategyDto});
+      return updateStrategy;
+   
+    
   }
 
   remove(id: number) {
