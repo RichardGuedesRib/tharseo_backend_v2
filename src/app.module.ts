@@ -8,6 +8,7 @@ import { jwtConstants } from './auth/constants';
 import { BinanceModule } from './binance/binance.module';
 import { WalletModule } from './wallet/wallet.module';
 import { AssetModule } from './asset/asset.module';
+import { StrategyModule } from './strategy/strategy.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AssetModule } from './asset/asset.module';
     BinanceModule,
     WalletModule,
     AssetModule,
+    StrategyModule,
   ],
   controllers: [],
   providers: [],

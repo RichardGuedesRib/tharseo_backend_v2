@@ -15,6 +15,7 @@ model Asset {
   isActive  Boolean
   order     Order[]
   tradeflows Tradeflow[]
+  wallets   Wallet[]
 }
 
 model Credential {
@@ -96,6 +97,7 @@ model Wallet {
   isFavorite  Boolean
   isActive    Boolean
   user        User    @relation("UserWallet", fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  asset       Asset   @relation(fields: [assetId], references: [id], onDelete: Cascade, onUpdate: NoAction) 
   
   @@unique([userId, assetId])
 }

@@ -64,7 +64,7 @@ export class AuthService {
           isActive: user.isActive,
       },
       token: this.jwtService.sign(payload),
-      expiresIn: 1200
+      expiresIn: 11200
   };
   }
 }

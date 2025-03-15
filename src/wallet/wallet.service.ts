@@ -95,7 +95,7 @@ export class WalletService {
    * @returns uma lista com os registros de carteira do usu rio
    */
   async findAll(user : TokenPayload) {
-    const wallets = await this.prisma.wallet.findMany({where: {userId: user.userId}});
+    const wallets = await this.prisma.wallet.findMany({where: {userId: user.userId}, include: {asset: true}});
     return wallets;
   }
 
