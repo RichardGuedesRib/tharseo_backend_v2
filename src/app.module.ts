@@ -10,6 +10,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { AssetModule } from './asset/asset.module';
 import { StrategyModule } from './strategy/strategy.module';
 import { TradeflowModule } from './tradeflow/tradeflow.module';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TradeflowModule } from './tradeflow/tradeflow.module';
     AssetModule,
     StrategyModule,
     TradeflowModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],
