@@ -14,8 +14,8 @@ export class AssetService {
    * @returns um objeto com os dados do ativo criado
    */
 
-  create(data: Prisma.AssetCreateInput) {
-    return this.prisma.asset.create({data});
+  async create(data: Prisma.AssetCreateInput) {
+    return await this.prisma.asset.create({data});
   }
 
   

@@ -45,8 +45,8 @@ export class AssetController {
    */
   @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.assetService.findAll();
+  async findAll() {
+    return await this.assetService.findAll();
   }
 
     /**
