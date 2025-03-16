@@ -11,5 +11,6 @@ import { UserModule } from 'src/user/user.module';
    imports: [UserModule, DatabaseModule, forwardRef(() => AssetModule), forwardRef(() => AuthModule)],
   controllers: [StrategyController],
   providers: [StrategyService],
+  exports: [StrategyService]
 })
 export class StrategyModule {}

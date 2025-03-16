@@ -9,6 +9,7 @@ import { BinanceModule } from './binance/binance.module';
 import { WalletModule } from './wallet/wallet.module';
 import { AssetModule } from './asset/asset.module';
 import { StrategyModule } from './strategy/strategy.module';
+import { TradeflowModule } from './tradeflow/tradeflow.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { StrategyModule } from './strategy/strategy.module';
     WalletModule,
     AssetModule,
     StrategyModule,
+    TradeflowModule,
   ],
   controllers: [],
   providers: [],
