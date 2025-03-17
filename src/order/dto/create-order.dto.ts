@@ -9,11 +9,15 @@ export class CreateOrderDto {
   @IsString()
   quantity : string;
 
+  @IsNotEmpty()
+  @IsString()
+  side : string;
+
   @IsString()
   userId : string;
 
   @IsString()
-  strategyId : string
+  strategyId : string;
 
   @IsNotEmpty()
   @IsDate()
@@ -38,7 +42,7 @@ export class CreateOrderDto {
   targetPrice : number;
 
   @IsNumber()
-  stopPrice : number
+  stopPrice : number;
 
   @IsNumber()
   result : number;
