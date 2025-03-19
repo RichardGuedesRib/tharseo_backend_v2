@@ -11,6 +11,7 @@ import { AssetModule } from './asset/asset.module';
 import { StrategyModule } from './strategy/strategy.module';
 import { TradeflowModule } from './tradeflow/tradeflow.module';
 import { OrderModule } from './order/order.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { OrderModule } from './order/order.module';
     StrategyModule,
     TradeflowModule,
     OrderModule,
+    PrometheusModule.register()
   ],
   controllers: [],
   providers: [],
