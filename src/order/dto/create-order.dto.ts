@@ -5,9 +5,15 @@ export class CreateOrderDto {
   @IsString()  
   assetId : string;
 
+  @IsString()  
+  pairOrderId : string;
+
   @IsNotEmpty()
   @IsString()
   quantity : string;
+
+  @IsString()
+  quantityType : string;
 
   @IsNotEmpty()
   @IsString()
@@ -16,42 +22,26 @@ export class CreateOrderDto {
   @IsString()
   userId : string;
 
-  @IsString()
-  strategyId : string;
-
-  @IsNotEmpty()
   @IsDate()
   openDate : Date;
 
-  @IsDate()
-  closeDate : Date;
-
-  @IsNotEmpty()
-  @IsNumber()
-  openPrice : number;
-
-  @IsNumber()
-  closePrice : number;
+  @IsString()
+  closePrice : string;
 
   @IsNotEmpty()
   @IsString()
   typeOrder : string;
 
   @IsNotEmpty()
-  @IsNumber()
-  targetPrice : number;
+  @IsString()
+  targetPrice : string;
 
-  @IsNumber()
-  stopPrice : number;
+  @IsString()
+  stopPrice : string;
 
-  @IsNumber()
-  result : number;
-
-  @IsNotEmpty()
   @IsString()
   status : string;
 
-  @IsNotEmpty()
   @IsBoolean()
   isActive : boolean;
 }

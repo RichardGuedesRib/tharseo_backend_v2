@@ -5,7 +5,7 @@ import { BinanceapiService } from './binanceapi/binanceapi.service';
 
 @Module({
   providers: [BinanceapiService],
-  exports: [BinanceapiService],
   controllers: [BinanceapiController],
+  exports: [BinanceapiService],
 })
 export class BinanceModule {}

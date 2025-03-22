@@ -4,6 +4,6 @@ export default interface NewOrder {
   symbol: string;
   side: string;
   typeOrder: string;
-  price: string;
+  price: string | null;
   quantity: string;
 }
