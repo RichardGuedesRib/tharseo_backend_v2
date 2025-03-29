@@ -79,6 +79,7 @@ export class OrderService {
           typeOrder: createOrderDto.typeOrder,
           targetPrice: createOrderBinance.price ? createOrderBinance.price : null,
           isActive: true,
+          idOrderExchange: sendOrderExchange.orderId?.toString() ?? '',
         },
       });
 
@@ -247,8 +248,7 @@ export class OrderService {
       where: {
         status: 'PENDENTE',
         OR: [
-          { idOrderExchange: null }, 
-          { idOrderExchange: '' }, 
+          { idOrderExchange: "" }, 
         ],
       },
     });
