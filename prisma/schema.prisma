@@ -30,7 +30,7 @@ model Credential {
 
 model Order {
   id            String    @id @default(uuid()) @db.Char(36)
-  idOrderExchange String?
+  idOrderExchange String
   assetId       String    @db.Char(36)
   quantity      String    @db.VarChar(100)
   userId        String    @db.Char(36)
