@@ -12,4 +12,10 @@ export class EngineTharseoController {
       
       return await this.engineTharseoService.startEngineTharseo();
     }
+
+    @Get('check')
+    @UseGuards(AuthGuard)
+    async checkOrders() {
+      return await this.engineTharseoService.checkOrders();
+    }
 }
