@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDatabaseDto } from './dto/create-order-database.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { StrategyService } from 'src/strategy/strategy.service';
 import { UserService } from 'src/user/user.service';
 import { AssetService } from 'src/asset/asset.service';
 import { PrismaService } from 'src/database/prisma.service';
@@ -10,6 +10,7 @@ import { BinanceapiService } from 'src/binance/binanceapi/binanceapi.service';
 import NewOrder from 'src/binance/dto/orders/new.order';
 import { Logger } from '@nestjs/common';
 
+
 @Injectable()
 export class OrderService {
   private readonly logger = new Logger(OrderService.name)
@@ -17,7 +18,6 @@ export class OrderService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UserService,
-    private readonly strategyService: StrategyService,
     private readonly assetService: AssetService,
     private readonly binanceApiService: BinanceapiService,
     
@@ -91,6 +91,68 @@ export class OrderService {
     
   }
 
+
+  /**
+   * Salva um pedido no banco de dados.
+   *
+   * @param createOrderDatabaseDto dados do pedido a ser salvo
+   * @returns dados do pedido salvo
+   * @throws NotFoundException caso n o seja encontrado o usu rio logado
+   * @throws BadGatewayException caso ocorra um erro ao salvar o pedido
+   */
+  async createOnDatabase(createOrderDatabaseDto: CreateOrderDatabaseDto) {
+    this.logger.log(`Pedido de cadastro de ordem recebido: ${JSON.stringify(createOrderDatabaseDto)}`);
+
+    const asset = await this.assetService.findOne(createOrderDatabaseDto.assetId);
+    if (!asset) {
+      throw new NotFoundException('Asset not found');
+    }
+
+    const userReq = await this.userService.getUserById(createOrderDatabaseDto.userId);
+    if (!userReq) {
+      throw new NotFoundException('User not found');
+    }
+    
+      const createOrder = await this.prisma.order.create({
+        data: {
+          asset: {
+            connect: {
+              id: createOrderDatabaseDto.assetId,
+            },
+          },
+          user: {
+            connect: {
+              id: userReq.id,
+            }
+          },
+          pairOrder: createOrderDatabaseDto.pairOrderId ? {
+            connect: {
+              id: createOrderDatabaseDto.pairOrderId,
+            }
+          }  : undefined,
+          strategy: {
+            connect: {
+              id: createOrderDatabaseDto.strategyId,
+            }
+          },
+          openDate: new Date(),
+          openPrice: createOrderDatabaseDto.openPrice,
+          closePrice: createOrderDatabaseDto.closePrice ?? null,
+          quantity: createOrderDatabaseDto.quantity,
+          side: createOrderDatabaseDto.side,
+          status: createOrderDatabaseDto.status,
+          typeOrder: createOrderDatabaseDto.typeOrder,
+          targetPrice: createOrderDatabaseDto.targetPrice,
+          isActive: createOrderDatabaseDto.isActive,
+          idOrderExchange: createOrderDatabaseDto.idOrderExchange,
+        },
+      });
+
+      this.logger.log(`Pedido de ordem salvo no banco de dados: ${JSON.stringify(createOrder)}`);
+      return createOrder;
+      
+  }
+
   /**
    * Retorna todos os pedidos de um usu rio.
    *
@@ -154,5 +216,24 @@ export class OrderService {
     });
 
     return updateOrder;
+  }
+
+  /**
+   * Atualiza o campo pairOrderId do pedido informado.
+   *
+   * @param id id do pedido a ser atualizado.
+   * @param idPairOrder id do pedido de par que ser  atualizado.
+   */
+  async updateIdPairOrder(id:string, idPairOrder: string) {
+    await this.prisma.order.update({
+      where: { id: id },
+      data: {
+        pairOrder: {
+          connect: {
+            id: idPairOrder
+          }
+        }
+      }
+    })    
   }
 }

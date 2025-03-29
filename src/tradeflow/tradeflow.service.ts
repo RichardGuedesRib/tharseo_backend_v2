@@ -3,23 +3,21 @@ import { UpdateTradeflowDto } from './dto/update-tradeflow.dto';
 import { TokenPayload } from 'src/auth/dtos/token.payload';
 import { PrismaService } from 'src/database/prisma.service';
 import {
-  BadGatewayException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { StrategyService } from 'src/strategy/strategy.service';
-import { UserService } from 'src/user/user.service';
 import { AssetService } from 'src/asset/asset.service';
+import { EngineTharseoService } from 'src/engine-tharseo/engine-tharseo.service';
 
 @Injectable()
 export class TradeflowService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly userService: UserService,
     private readonly strategyService: StrategyService,
     private readonly assetService: AssetService,
+    private readonly engineTharseoService: EngineTharseoService,
   ) {}
 
   /**
@@ -132,6 +130,12 @@ export class TradeflowService {
       throw new UnauthorizedException('User not authorized');
     }
 
+    if(tradeFlow.isActive){
+      this.engineTharseoService.startEngineTharseo();
+    }
+
+  
+
     const updateTradeFlow = await this.prisma.tradeflow.update({
       where: { id: id },
       data: updateTradeflowDto,
@@ -169,3 +173,5 @@ export class TradeflowService {
     return deleteTradeFlow;
   }
 }
+
+

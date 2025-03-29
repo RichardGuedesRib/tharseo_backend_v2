@@ -6,9 +6,10 @@ import { forwardRef } from '@nestjs/common/utils';
 import { AssetModule } from 'src/asset/asset.module';
 import { UserModule } from 'src/user/user.module';
 import { StrategyModule } from 'src/strategy/strategy.module';
+import { EngineTharseoModule } from 'src/engine-tharseo/engine-tharseo.module';
 
 @Module({
-  imports: [UserModule, DatabaseModule, forwardRef(() => AssetModule),  forwardRef(() => StrategyModule)], 
+  imports: [UserModule, DatabaseModule, forwardRef(() => AssetModule),  forwardRef(() => StrategyModule), EngineTharseoModule], 
   controllers: [TradeflowController],
   providers: [TradeflowService],
 })

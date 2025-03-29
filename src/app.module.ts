@@ -12,6 +12,7 @@ import { StrategyModule } from './strategy/strategy.module';
 import { TradeflowModule } from './tradeflow/tradeflow.module';
 import { OrderModule } from './order/order.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { EngineTharseoModule } from './engine-tharseo/engine-tharseo.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
     StrategyModule,
     TradeflowModule,
     OrderModule,
-    PrometheusModule.register()
+    PrometheusModule.register(),
+    EngineTharseoModule
   ],
   controllers: [],
   providers: [],

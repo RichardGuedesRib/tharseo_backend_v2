@@ -256,4 +256,31 @@ export class BinanceapiService {
       );
     }
   }
+
+  /**
+   * Busca o preco de mercado atual de uma moeda na Binance.
+   *
+   * @param symbol par de moedas para a busca (ex: BTCUSDT)
+   * @returns o pre o de mercado atual da moeda
+   * @throws InternalServerErrorException se houver erro ao buscar o pre o de mercado
+   */
+  async getPriceMarket(symbol: string) {
+    try {
+      const client = new Spot('', '', {
+        baseURL: this.binanceBaseUrl,
+      });
+  
+      const response = await client.tickerPrice(symbol);
+      return response.data.price;
+    } catch (error) {
+      this.logger.error(
+        `Erro ao obter preço de mercado para ${symbol}`,
+        error.response?.data || error.message,
+      );
+      throw new InternalServerErrorException(
+        `Erro ao obter preço de mercado para ${symbol}: ${error.message}`,
+      );
+    }
+  }
+  
 }

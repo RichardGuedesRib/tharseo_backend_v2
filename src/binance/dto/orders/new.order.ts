@@ -1,4 +1,13 @@
+interface Fill {
+  price?: string;
+  qty?: string;
+  commission?: string;
+  commissionAsset?: string;
+  tradeId?: number;
+}
+
 export default interface NewOrder {
+  orderId?: string;
   apiKey: string;
   apiSecret: string;
   symbol: string;
@@ -6,4 +15,5 @@ export default interface NewOrder {
   typeOrder: string;
   price: string | null;
   quantity: string;
+  fills?: Fill[];
 }

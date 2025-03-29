@@ -18,5 +18,6 @@ import { BinanceModule } from 'src/binance/binance.module';
   ],
   controllers: [OrderController],
   providers: [OrderService],
+  exports: [OrderService]
 })
 export class OrderModule {}
