@@ -1,7 +1,6 @@
 import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
 import { Prisma } from '@prisma/client';
 
-
 export class CreateWalletDto {
   @IsString()
   @IsNotEmpty()
@@ -10,7 +9,7 @@ export class CreateWalletDto {
   @IsString()
   @IsNotEmpty()
   quantity: string;
- 
+
   @IsBoolean()
   @IsNotEmpty()
   isFavorite: boolean;

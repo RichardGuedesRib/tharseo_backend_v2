@@ -23,7 +23,7 @@ export class BinanceWsService implements OnModuleInit {
 
       this.prices[ticker.symbol] = ticker.price;
 
-        // console.log(`📈 ${ticker.symbol}: $${ticker.price}`);
+      // console.log(`📈 ${ticker.symbol}: $${ticker.price}`);
     });
   }
 

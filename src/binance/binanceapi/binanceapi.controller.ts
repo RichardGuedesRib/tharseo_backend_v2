@@ -9,15 +9,18 @@ import CancelOpenOrdersRequest from '../dto/orders/cancel.open.order.request';
 export class BinanceapiController {
   @Inject()
   private readonly binanceapiService: BinanceapiService;
-  
+
   private readonly apiKey = process.env.BINANCE_API_KEY;
   private readonly apiSecret = process.env.BINANCE_API_SECRET;
-
 
   @Get('chart-info')
   async getChartInfo() {
     try {
-      const response = await this.binanceapiService.getChartInfo('BTCUSDT', '1M', '5');
+      const response = await this.binanceapiService.getChartInfo(
+        'BTCUSDT',
+        '1M',
+        '5',
+      );
       console.log('response chart-info', response);
       return response;
     } catch (error) {
@@ -26,15 +29,14 @@ export class BinanceapiController {
   }
 
   @Get('test')
-  async testMethod(){
-
+  async testMethod() {
     // const newOrder = {
     //     apiKey : this.apiKey!,
-    //     apiSecret : this.apiSecret!, 
-    //     symbol : 'BNBUSDT', 
-    //     side : 'BUY', 
-    //     typeOrder : 'LIMIT', 
-    //     price : "620", 
+    //     apiSecret : this.apiSecret!,
+    //     symbol : 'BNBUSDT',
+    //     side : 'BUY',
+    //     typeOrder : 'LIMIT',
+    //     price : "620",
     //     quantity : "1"};
 
     // const response = await this.binanceapiService.
@@ -61,15 +63,11 @@ export class BinanceapiController {
 
     // 5695990
 
-    const cancelOrder : CancelOpenOrdersRequest = {
-        apiKey : this.apiKey!,
-        apiSecret : this.apiSecret!,
-        symbol : 'BNBUSDT'
-    }
-        return await this.binanceapiService.
-        cancelOpenOrders(cancelOrder);
-
+    const cancelOrder: CancelOpenOrdersRequest = {
+      apiKey: this.apiKey!,
+      apiSecret: this.apiSecret!,
+      symbol: 'BNBUSDT',
+    };
+    return await this.binanceapiService.cancelOpenOrders(cancelOrder);
   }
-
-  
 }

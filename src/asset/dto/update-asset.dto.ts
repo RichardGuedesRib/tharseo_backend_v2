@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 
 /**
  * Classe que representa os dados de um ativo que ser o atualizados.
- * 
+ *
  * @example
  * {
  *   name: 'Novo nome do ativo',
@@ -14,14 +14,14 @@ import { Prisma } from '@prisma/client';
  */
 export class UpdateAssetDto implements Prisma.AssetUpdateInput {
   @IsString()
-  @IsOptional() 
+  @IsOptional()
   name?: string;
 
   @IsString()
-  @IsOptional() 
+  @IsOptional()
   symbol?: string;
 
   @IsBoolean()
-  @IsOptional() 
+  @IsOptional()
   isActive?: boolean;
 }

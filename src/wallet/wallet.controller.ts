@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { WalletService } from './wallet.service';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
@@ -11,9 +21,15 @@ export class WalletController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async createOrUpdate(@Body() createWalletDto: CreateWalletDto, @Request() req) {
+  async createOrUpdate(
+    @Body() createWalletDto: CreateWalletDto,
+    @Request() req,
+  ) {
     const user = req.user;
-    const wallet = await this.walletService.createOrUpdate(createWalletDto, user);
+    const wallet = await this.walletService.createOrUpdate(
+      createWalletDto,
+      user,
+    );
     return wallet;
   }
 
@@ -21,11 +37,10 @@ export class WalletController {
   @UseGuards(AuthGuard)
   /**
    * Recupera todas as carteiras associadas ao usuário autenticado.
-   * 
+   *
    * @param req - O objeto de solicitação que contém as informações do usuário autenticado.
    * @returns Uma lista de carteiras do usuário.
    */
-
   async findAll(@Request() req) {
     const user = req.user;
     const wallets = await this.walletService.findAll(user as TokenPayload);
@@ -36,7 +51,7 @@ export class WalletController {
   @UseGuards(AuthGuard)
   /**
    * Recupera uma carteira específica do usuário autenticado com base no id informado.
-   * 
+   *
    * @param id - O id da carteira a ser recuperada.
    * @param req - O objeto de solicitação que contém as informações do usuário autenticado.
    * @returns A carteira do usuário com base no id informado.

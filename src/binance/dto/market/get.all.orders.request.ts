@@ -1,5 +1,5 @@
 export default interface GetAllOrdersRequest {
-    apiKey: string;
-    apiSecret: string;
-    symbol: string;
+  apiKey: string;
+  apiSecret: string;
+  symbol: string;
 }

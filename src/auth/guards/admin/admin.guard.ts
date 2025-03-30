@@ -1,5 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';  
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Injectable()
 export class AdminGuard extends AuthGuard {
@@ -16,12 +21,12 @@ export class AdminGuard extends AuthGuard {
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user;  
+    const user = request.user;
 
     if (user.levelUser !== 'admin') {
       throw new UnauthorizedException('Acesso restrito para administradores');
     }
 
-    return true;  
+    return true;
   }
 }

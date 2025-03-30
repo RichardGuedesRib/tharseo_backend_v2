@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { StrategyService } from './strategy.service';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { UpdateStrategyDto } from './dto/update-strategy.dto';
@@ -19,7 +29,7 @@ export class StrategyController {
    * @throws NotFoundException caso o usu rio n o seja encontrado.
    * @throws BadGatewayException caso ocorra um erro ao criar a estrat gia.
    */
-  create(@Body() createStrategyDto: CreateStrategyDto, @Request() req) {    
+  create(@Body() createStrategyDto: CreateStrategyDto, @Request() req) {
     const user = req.user;
     return this.strategyService.create(createStrategyDto, user);
   }
@@ -67,19 +77,22 @@ export class StrategyController {
    * @throws NotFoundException caso a estrat gia n o seja encontrada
    * @throws BadGatewayException caso ocorra um erro ao atualizar a estrat gia
    */
-  async update(@Param('id') id: string, @Body() updateStrategyDto: UpdateStrategyDto, @Request() req) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateStrategyDto: UpdateStrategyDto,
+    @Request() req,
+  ) {
     const user = req.user;
     return await this.strategyService.update(id, updateStrategyDto, user);
   }
 
   @Delete(':id')
-/**
- * Remove uma estrat gia baseada no id fornecido.
- *
- * @param id id da estrat gia a ser removida.
- * @returns mensagem indicando que a estrat gia foi removida.
- */
-
+  /**
+   * Remove uma estrat gia baseada no id fornecido.
+   *
+   * @param id id da estrat gia a ser removida.
+   * @returns mensagem indicando que a estrat gia foi removida.
+   */
   remove(@Param('id') id: string) {
     return this.strategyService.remove(+id);
   }

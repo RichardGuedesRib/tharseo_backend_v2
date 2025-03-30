@@ -30,13 +30,13 @@ export class AssetController {
    * @returns A resposta do serviço de criação de ativos.
    */
   @UseGuards(AuthGuard, AdminGuard)
-  @UsePipes(new ValidationPipe()) 
+  @UsePipes(new ValidationPipe())
   @Post()
   create(@Body() data: CreateAssetDto) {
     return this.assetService.create(data);
   }
 
-    /**
+  /**
    * Retorna todos os ativos cadastrados pelo usuário.
    *
    * @param req - O objeto de requisição, que contém informações do usuário.
@@ -49,7 +49,7 @@ export class AssetController {
     return await this.assetService.findAll();
   }
 
-    /**
+  /**
    * Retorna um ativo especificado pelo seu ID.
    *
    * @param req - O objeto de requisi o, que cont m informa es do usu rio.
@@ -60,11 +60,11 @@ export class AssetController {
   @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const asset = await this.assetService.findOne(id); 
+    const asset = await this.assetService.findOne(id);
     if (!asset) {
       throw new NotFoundException('Asset not found');
     }
-    return asset;  
+    return asset;
   }
   /**
    * Atualiza um ativo especificado pelo seu ID.

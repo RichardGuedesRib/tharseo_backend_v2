@@ -1,4 +1,11 @@
-import { Controller, Post, Inject, Body, HttpException, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Inject,
+  Body,
+  HttpException,
+  HttpCode,
+} from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { LoginRequest } from './dtos/login.request';
@@ -28,7 +35,7 @@ export class AuthController {
   @HttpCode(200)
   async signIn(@Body() data: LoginRequest) {
     const auth = await this.authService.signIn(data);
-    console.log("Auth", auth);
+    console.log('Auth', auth);
     return auth;
   }
 }

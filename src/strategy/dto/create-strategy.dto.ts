@@ -1,31 +1,27 @@
-
 import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
 
 export class CreateStrategyDto {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    description: string;
-   
-    @IsString()
-    userId: string;
+  @IsString()
+  @IsNotEmpty()
+  name: string;
 
-    @IsNumber()
-    profit : number;
+  @IsString()
+  @IsNotEmpty()
+  description: string;
 
-    @IsNumber()
-    performance: number;
+  @IsString()
+  userId: string;
 
-    @IsString()
-    configStrategy : string;
-  
-    @IsBoolean()
-    @IsNotEmpty()
-    isActive: boolean;
+  @IsNumber()
+  profit: number;
+
+  @IsNumber()
+  performance: number;
+
+  @IsString()
+  configStrategy: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isActive: boolean;
 }
-
-
-

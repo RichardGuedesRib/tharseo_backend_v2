@@ -6,14 +6,12 @@ import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('user')
 export class UserController {
-    @Inject()
-    private readonly userService: UserService;
+  @Inject()
+  private readonly userService: UserService;
 
-    @UseGuards(AuthGuard)
-    @Get("/")
-    async getAllUsers() {
-        return this.userService.getAllUsers();
-    }
-
-
+  @UseGuards(AuthGuard)
+  @Get('/')
+  async getAllUsers() {
+    return this.userService.getAllUsers();
+  }
 }

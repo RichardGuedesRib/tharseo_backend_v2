@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -65,9 +75,12 @@ export class OrderController {
    * @throws NotFoundException caso o pedido n o seja encontrado
    * @throws BadGatewayException caso ocorra um erro ao atualizar o pedido
    */
-  async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto, @Request() req) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+    @Request() req,
+  ) {
     const user = req.user;
     return await this.orderService.update(id, updateOrderDto, user);
   }
-
 }

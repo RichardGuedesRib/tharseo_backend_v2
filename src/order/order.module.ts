@@ -14,10 +14,10 @@ import { BinanceModule } from 'src/binance/binance.module';
     DatabaseModule,
     forwardRef(() => AssetModule),
     forwardRef(() => StrategyModule),
-    BinanceModule
+    BinanceModule,
   ],
   controllers: [OrderController],
   providers: [OrderService],
-  exports: [OrderService]
+  exports: [OrderService],
 })
 export class OrderModule {}

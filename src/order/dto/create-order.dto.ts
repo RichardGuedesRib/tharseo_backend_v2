@@ -1,47 +1,60 @@
-import { IsString, IsNotEmpty, IsNumber, IsDate, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsDate,
+  IsBoolean,
+  isString,
+} from 'class-validator';
 
 export class CreateOrderDto {
   @IsNotEmpty()
-  @IsString()  
-  assetId : string;
+  @IsString()
+  assetId: string;
 
-  @IsString()  
-  pairOrderId : string;
+  @IsString()
+  pairOrderId: string;
 
   @IsNotEmpty()
   @IsString()
-  quantity : string;
+  quantity: string;
 
   @IsString()
-  quantityType : string;
+  quantityType: string;
 
   @IsNotEmpty()
   @IsString()
-  side : string;
+  side: string;
 
   @IsString()
-  userId : string;
+  userId: string;
 
   @IsDate()
-  openDate : Date;
+  openDate: Date;
+
+  @IsDate()
+  closeDate: Date;
 
   @IsString()
-  closePrice : string;
+  closePrice: string;
 
   @IsNotEmpty()
   @IsString()
-  typeOrder : string;
+  typeOrder: string;
 
   @IsNotEmpty()
   @IsString()
-  targetPrice : string;
+  targetPrice: string;
 
   @IsString()
-  stopPrice : string;
+  stopPrice: string;
 
   @IsString()
-  status : string;
+  status: string;
 
   @IsBoolean()
-  isActive : boolean;
+  isActive: boolean;
+
+  @IsString()
+  idOrderExchange: string;
 }

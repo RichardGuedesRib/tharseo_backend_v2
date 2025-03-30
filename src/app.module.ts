@@ -32,7 +32,7 @@ import { EngineTharseoModule } from './engine-tharseo/engine-tharseo.module';
     TradeflowModule,
     OrderModule,
     PrometheusModule.register(),
-    EngineTharseoModule
+    EngineTharseoModule,
   ],
   controllers: [],
   providers: [],

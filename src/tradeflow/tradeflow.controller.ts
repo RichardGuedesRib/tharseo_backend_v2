@@ -1,9 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { TradeflowService } from './tradeflow.service';
 import { CreateTradeflowDto } from './dto/create-tradeflow.dto';
 import { UpdateTradeflowDto } from './dto/update-tradeflow.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
-
 
 @Controller('/v1/tradeflow')
 export class TradeflowController {
@@ -66,8 +75,11 @@ export class TradeflowController {
    * @throws NotFoundException caso o fluxo de negócio não seja encontrado.
    * @throws UnauthorizedException caso o usuário não esteja autorizado a atualizar o fluxo de negócio.
    */
-
- async update(@Param('id') id: string, @Body() updateTradeflowDto: UpdateTradeflowDto, @Request() req) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateTradeflowDto: UpdateTradeflowDto,
+    @Request() req,
+  ) {
     const user = req.user;
     return await this.tradeflowService.update(id, updateTradeflowDto, user);
   }
@@ -87,5 +99,4 @@ export class TradeflowController {
     const user = req.user;
     return await this.tradeflowService.remove(id, user);
   }
-
 }

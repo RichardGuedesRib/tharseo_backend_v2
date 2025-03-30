@@ -7,5 +7,4 @@ export default interface NewOcoOrder {
   price: string;
   takeProfit: string;
   takeProfitLimit: string;
-  
 }

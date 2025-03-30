@@ -130,11 +130,9 @@ export class TradeflowService {
       throw new UnauthorizedException('User not authorized');
     }
 
-    if(tradeFlow.isActive){
+    if (tradeFlow.isActive) {
       this.engineTharseoService.startEngineTharseo();
     }
-
-  
 
     const updateTradeFlow = await this.prisma.tradeflow.update({
       where: { id: id },
@@ -173,5 +171,3 @@ export class TradeflowService {
     return deleteTradeFlow;
   }
 }
-
-

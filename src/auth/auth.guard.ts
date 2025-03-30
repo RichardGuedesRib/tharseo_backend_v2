@@ -1,11 +1,17 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, Inject } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+  Inject,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
   private readonly secret = process.env.SECRET_KEY;
 
-  constructor(private readonly jwtService: JwtService) {} 
+  constructor(private readonly jwtService: JwtService) {}
 
   /**
    * Verifica se o token de autentica o  v lido e se o usu rio est  autenticado.
@@ -21,10 +27,12 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync(authorization, { secret: this.secret });
+      const payload = await this.jwtService.verifyAsync(authorization, {
+        secret: this.secret,
+      });
       request.user = payload;
     } catch (error) {
-      console.error("JWT Verification Error:", error);
+      console.error('JWT Verification Error:', error);
       throw new UnauthorizedException('Invalid Token');
     }
 

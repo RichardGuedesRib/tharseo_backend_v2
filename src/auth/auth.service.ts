@@ -36,7 +36,6 @@ export class AuthService {
     }
   }
 
-
   /**
    * Realiza o login de um usuario
    *
@@ -52,19 +51,24 @@ export class AuthService {
     if (!(await bcrypt.compare(data.password, user.password))) {
       throw new UnauthorizedException('Email ou senha incorretos');
     }
-    const payload = { userId: user.id, username: user.email, levelUser: user.levelUser, isActive: user.isActive };
+    const payload = {
+      userId: user.id,
+      username: user.email,
+      levelUser: user.levelUser,
+      isActive: user.isActive,
+    };
     return {
       user: {
-          id: user.id,
-          name: user.name,
-          lastName: user.lastName,
-          email: user.email,
-          levelUser: user.levelUser,
-          balance: user.balance,
-          isActive: user.isActive,
+        id: user.id,
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+        levelUser: user.levelUser,
+        balance: user.balance,
+        isActive: user.isActive,
       },
       token: this.jwtService.sign(payload),
-      expiresIn: 11200
-  };
+      expiresIn: 11200,
+    };
   }
 }

@@ -5,6 +5,9 @@ import NewOrder from 'src/binance/dto/orders/new.order';
 import { CreateOrderExchangeRequest } from './dto/create-order-exchange-request';
 import { OrderService } from 'src/order/order.service';
 import { CreateOrderDatabaseDto } from 'src/order/dto/create-order-database.dto';
+import { CheckOrder } from 'src/binance/dto/orders/check-order.request';
+import { UpdateOrderDto } from 'src/order/dto/update-order.dto';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class EngineTharseoService {
@@ -13,7 +16,11 @@ export class EngineTharseoService {
   private readonly binanceApiService: BinanceapiService;
   private readonly orderService: OrderService;
 
-  constructor(prisma: PrismaService, binanceApiService: BinanceapiService, orderService: OrderService) {
+  constructor(
+    prisma: PrismaService,
+    binanceApiService: BinanceapiService,
+    orderService: OrderService,
+  ) {
     this.prisma = prisma;
     this.binanceApiService = binanceApiService;
     this.orderService = orderService;
@@ -47,7 +54,7 @@ export class EngineTharseoService {
       const profitTarget = config.profitTarget;
       const variableOrder = config.variableOrder;
 
-       if (ordersOpen.length >= config.quantityGrids) {
+      if (ordersOpen.length >= config.quantityGrids) {
         this.logger.log(
           `[Tradeflow não acessado. Limite de ordens alcançadas][${tradeflow.strategy.user.name} - ${tradeflow.strategy.user.email}]`,
         );
@@ -75,15 +82,12 @@ export class EngineTharseoService {
         };
 
         for (let i = 1; i <= availableOrders; i++) {
-          let priceSell = priceBuy * (1 + profitTarget / 100);
+          const priceSell = priceBuy * (1 + profitTarget / 100);
 
           createOrderExchangeRequest.price = Number(priceBuy).toFixed(2);
           createOrderExchangeRequest.side = 'BUY';
           createOrderExchangeRequest.target = Number(priceSell).toFixed(2);
-          await this.createOrder(
-            createOrderExchangeRequest,
-            tradeflow,
-          );
+          await this.createOrder(createOrderExchangeRequest, tradeflow);
 
           priceBuy *= 1 - variableOrder / 100;
 
@@ -113,8 +117,10 @@ export class EngineTharseoService {
     tradeflow: any,
   ) {
     const sendOrder = await this.sendExchangeOrder(createOrderExchangeRequest);
-    this.logger.log(`Enviando ordem para exchange: ${JSON.stringify(sendOrder)}`);
-    const createOrderDatabaseDto : CreateOrderDatabaseDto = {
+    this.logger.log(
+      `Enviando ordem para exchange: ${JSON.stringify(sendOrder)}`,
+    );
+    const createOrderDatabaseDto: CreateOrderDatabaseDto = {
       assetId: tradeflow.assetId,
       userId: tradeflow.strategy.user.id,
       strategyId: tradeflow.strategy.id,
@@ -126,20 +132,28 @@ export class EngineTharseoService {
       side: createOrderExchangeRequest.side,
       status: 'PENDENTE',
       isActive: true,
-      idOrderExchange:sendOrder.orderId?.toString() ?? '', 
-    } 
+      idOrderExchange: sendOrder.orderId?.toString() ?? '',
+    };
 
-    const createBuyOrder = await this.orderService.createOnDatabase(createOrderDatabaseDto);
+    const createBuyOrder = await this.orderService.createOnDatabase(
+      createOrderDatabaseDto,
+    );
 
     createOrderDatabaseDto.targetPrice = createOrderExchangeRequest.target;
     createOrderDatabaseDto.side = 'SELL';
     createOrderDatabaseDto.pairOrderId = createBuyOrder.id;
     createOrderDatabaseDto.idOrderExchange = '';
 
-    const createSellOrder = await this.orderService.createOnDatabase(createOrderDatabaseDto); 
-    await this.orderService.updateIdPairOrder(createBuyOrder.id, createSellOrder.id); 
-    this.logger.log(`Processo de ativação de automação concluido: ${tradeflow.strategy.user.name} - ${tradeflow.strategy.user.email}`); 
-    
+    const createSellOrder = await this.orderService.createOnDatabase(
+      createOrderDatabaseDto,
+    );
+    await this.orderService.updateIdPairOrder(
+      createBuyOrder.id,
+      createSellOrder.id,
+    );
+    this.logger.log(
+      `Processo de ativação de automação concluido: ${tradeflow.strategy.user.name} - ${tradeflow.strategy.user.email}`,
+    );
   }
 
   /**
@@ -202,15 +216,82 @@ export class EngineTharseoService {
     return await this.prisma.order.findMany({
       where: {
         status: 'PENDENTE',
-        side: 'SELL'
+        side: 'SELL',
       },
     });
   }
 
+  /**
+   * Verifica se as ordens pendentes foram executadas.
+   *
+   * Verifica se as ordens de compra pendentes foram executadas e,
+   * se sim, fecha a ordem e envia uma ordem de venda com o preco de venda
+   * estabelecido na ordem de compra.
+   */
+  @Interval(20000)
   async checkOrders() {
-    
+    const orders = await this.orderService.getPendingOrdersCreated();
+
+    this.logger.log(`Checando ordens pendentes: ${orders.length}`);
+
+    if (orders.length > 0) {
+      for (const order of orders) {
+        const check: CheckOrder = {
+          apiKey: order.user?.credential?.apiKey ?? '',
+          apiSecret: order.user?.credential?.secretKey ?? '',
+          symbol: order.asset.symbol,
+          orderId: order.idOrderExchange,
+        };
+
+        const checkOrder = await this.binanceApiService.checkOrder(check);
+
+        if (checkOrder && checkOrder.status === 'FILLED') {
+          this.logger.log(
+            `Ordem de compra executada: ${JSON.stringify(checkOrder)}`,"");
+          const updateOrder: UpdateOrderDto = {
+            status: 'EXECUTADA',
+            closeDate: new Date(),
+            closePrice: Number(checkOrder.price).toFixed(2),
+          };
+
+          await this.orderService.updateOrderFromCheckExchange(
+            order.id,
+            updateOrder,
+          );
+
+          if (order.side == 'BUY') {
+            const createOrderExchangeRequest: CreateOrderExchangeRequest = {
+              apiKey: order.user?.credential?.apiKey ?? '',
+              secretKey: order.user?.credential?.secretKey ?? '',
+              symbol: order.asset.symbol,
+              side: 'SELL',
+              typeOrder: order.typeOrder,
+              price: order.targetPrice!,
+              quantity: order.quantity,
+              target: order.targetPrice!,
+            };
+
+            const sendSellOrder = await this.sendExchangeOrder(
+              createOrderExchangeRequest,
+            );
+
+            if (sendSellOrder) {
+              const updateOrder: UpdateOrderDto = {
+                idOrderExchange: sendSellOrder.orderId?.toString(),
+              };
+
+              await this.orderService.updateOrderFromCheckExchange(
+                order.pairOrder!.id,
+                updateOrder,
+              );
+
+            }
+          }
+        }
+
+      }
+    }
+
+    this.startEngineTharseo();
   }
-
-  
-
 }
