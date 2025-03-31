@@ -83,4 +83,20 @@ export class OrderController {
     const user = req.user;
     return await this.orderService.update(id, updateOrderDto, user);
   }
+
+  @Delete('cancel-open-orders')
+  @UseGuards(AuthGuard)
+  /**
+   * Cancela todas as ordens abertas do usu rio.
+   *
+   * @param user informa es do usu rio autenticado.
+   * @returns dados das ordens canceladas.
+   * @throws NotFoundException caso n o seja encontrado o usu rio logado
+   * @throws BadGatewayException caso ocorra um erro ao cancelar as ordens
+   */
+  async cancelOpenOrders(@Request() req) {
+    const user = req.user;
+    return await this.orderService.cancelOpenOrders(user);
+  }
+
 }

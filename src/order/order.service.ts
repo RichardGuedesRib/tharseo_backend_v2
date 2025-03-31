@@ -13,6 +13,7 @@ import { TokenPayload } from 'src/auth/dtos/token.payload';
 import { BinanceapiService } from 'src/binance/binanceapi/binanceapi.service';
 import NewOrder from 'src/binance/dto/orders/new.order';
 import { Logger } from '@nestjs/common';
+import CancelOpenOrdersRequest from 'src/binance/dto/orders/cancel.open.order.request';
 
 @Injectable()
 export class OrderService {
@@ -274,18 +275,17 @@ export class OrderService {
         },
       },
       include: {
-        strategy: true ,
+        strategy: true,
         asset: true,
-        user : {
+        user: {
           include: {
-            credential: true
-          }
+            credential: true,
+          },
         },
-        pairOrder: true
+        pairOrder: true,
       },
-
     });
-  
+
     return orders;
   }
 
@@ -295,12 +295,78 @@ export class OrderService {
    * @param id id do pedido a ser atualizado.
    * @param order dados do pedido a serem atualizados.
    */
-  async updateOrderFromCheckExchange(id: string, order: UpdateOrderDto ) {
+  async updateOrderFromCheckExchange(id: string, order: UpdateOrderDto) {
     await this.prisma.order.update({
       where: { id: id },
       data: order,
     });
   }
 
-  
+  /**
+   * Cancela todas as ordens abertas de um usuário em todos os ativos disponíveis.
+   *
+   * @param user Dados do usuário autenticado.
+   * @throws NotFoundException caso o usuário não seja encontrado.
+   * Atualiza o status das ordens no banco de dados para 'CANCELADO'.
+   * Registra logs durante o processo de cancelamento.
+   */
+
+  async cancelOpenOrders(user: TokenPayload) {
+    this.logger.log(
+      `Pedido de cancelamento de ordens em abertas recebeido: ${JSON.stringify(user)}`,
+    );
+
+    const userReq = await this.userService.getUserById(user.userId);
+    if (!userReq) {
+      throw new NotFoundException('User not found');
+    }
+
+    const symbols = await this.prisma.order.findMany({
+      where: {
+        status: "PENDENTE",
+        asset: {
+          symbol: { not: "USDT" }, // Exclui o USDT
+        },
+      },
+      select: {
+        asset: {
+          select: {
+            symbol: true,
+          },
+        },
+      },
+      distinct: ["assetId"], 
+    });
+
+    const uniqueSymbols = symbols.map(order => order.asset.symbol);
+
+    for (const symbol of uniqueSymbols) {
+      const cancelRequest: CancelOpenOrdersRequest = {
+        apiKey: userReq.credential!.apiKey,
+        apiSecret: userReq.credential!.secretKey,
+        symbol:symbol,
+      };
+
+      await this.binanceApiService.cancelOpenOrders(cancelRequest);
+    }
+
+    await this.prisma.order.updateMany({
+      where: {
+        status: 'PENDENTE',
+        userId: user.userId,
+      },
+      data: {
+        status: 'CANCELADO',
+      },
+    });
+
+    this.logger.log(
+      `Ordens canceladas para o usuário: ${JSON.stringify(user)}`,
+    );
+
+    return {
+      success: true,
+      message: 'Ordens canceladas com sucesso',
+    };
+  }
 }
