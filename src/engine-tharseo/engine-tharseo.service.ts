@@ -246,13 +246,33 @@ export class EngineTharseoService {
         const checkOrder = await this.binanceApiService.checkOrder(check);
 
         if (checkOrder && checkOrder.status === 'FILLED') {
-          this.logger.log(
-            `Ordem de compra executada: ${JSON.stringify(checkOrder)}`,"");
+          this.logger.log(`Ordem executada: ${JSON.stringify(checkOrder)}`, '');
           const updateOrder: UpdateOrderDto = {
             status: 'EXECUTADA',
             closeDate: new Date(),
             closePrice: Number(checkOrder.price).toFixed(2),
           };
+
+          if (order.side == 'SELL') {
+            const priceBuy = order.pairOrder?.closePrice;
+            const priceSell = order.closePrice;
+            const quantity = order.quantity;
+            
+
+            if (priceBuy && priceSell && quantity) {
+              const totalBuy = Number(priceBuy) * Number(quantity);
+              const totalSell = Number(priceSell) * Number(quantity);
+              const profit = totalSell - totalBuy;
+              const performance = (profit / totalBuy) * 100;
+              updateOrder.result = String(profit.toFixed(2));
+              updateOrder.strategyId = order.strategyId!;
+              updateOrder.performance = String(performance.toFixed(2)); 
+            } else {
+              this.logger.warn(
+                'Dados insuficiente para calcular o profit da operação',
+              );
+            }
+          }
 
           await this.orderService.updateOrderFromCheckExchange(
             order.id,
@@ -284,11 +304,9 @@ export class EngineTharseoService {
                 order.pairOrder!.id,
                 updateOrder,
               );
-
             }
           }
         }
-
       }
     }
 

@@ -12,11 +12,11 @@ export class CreateStrategyDto {
   @IsString()
   userId: string;
 
-  @IsNumber()
-  profit: number;
+  @IsString()
+  profit: string;
 
-  @IsNumber()
-  performance: number;
+  @IsString()
+  performance: string;
 
   @IsString()
   configStrategy: string;

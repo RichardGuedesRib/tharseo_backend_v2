@@ -57,4 +57,13 @@ export class CreateOrderDto {
 
   @IsString()
   idOrderExchange: string;
+
+  @IsString()
+  result: string
+
+  @IsString()
+  strategyId: string
+
+  @IsString()
+  performance: string
 }

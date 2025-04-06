@@ -71,8 +71,8 @@ model Strategy {
   description    String     @db.VarChar(255)
   configStrategy String?     @db.VarChar(255)
   userId         String     @db.Char(36)
-  performance    Int?
-  profit        Int?
+  performance    String?
+  profit        String?
   isActive      Boolean
   order         Order[]
   tradeflows    Tradeflow[]

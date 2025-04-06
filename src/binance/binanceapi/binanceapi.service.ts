@@ -155,7 +155,6 @@ export class BinanceapiService {
       });
 
       const getprice = await client.tickerPrice('BNBUSDT');
-      console.log('BNBRPICE', getprice.data);
 
       const response = await client.newOCOOrder(
         newOcoOrder.symbol,

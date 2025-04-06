@@ -296,10 +296,39 @@ export class OrderService {
    * @param order dados do pedido a serem atualizados.
    */
   async updateOrderFromCheckExchange(id: string, order: UpdateOrderDto) {
+
+    const { performance, ...orderWithoutPerformance } = order;
+
     await this.prisma.order.update({
       where: { id: id },
-      data: order,
+      data: orderWithoutPerformance,
     });
+
+
+    if(order.result && order.strategyId && order.performance){
+      const strategy = await this.prisma.strategy.findFirst({
+        where: {
+          id: order.strategyId,
+        },
+      });
+
+      const newProfit = Number(strategy?.profit!) + Number(order.result);
+      const newPerformance = Number(strategy?.performance!) + Number(order.performance);
+
+      this.logger.log(`Stragegy ${strategy?.name} possui o novo profit de ${newProfit}`);
+      this.logger.log(`Stragegy ${strategy?.name} possui a nova performance de ${newPerformance}`);
+      await this.prisma.strategy.update({
+        where: {
+          id: order.strategyId,
+        },
+        data: {
+          profit: String(newProfit),
+          performance: String(newPerformance),
+        },
+      });
+      
+    }
+
   }
 
   /**
@@ -325,7 +354,7 @@ export class OrderService {
       where: {
         status: "PENDENTE",
         asset: {
-          symbol: { not: "USDT" }, // Exclui o USDT
+          symbol: { not: "USDT" }, 
         },
       },
       select: {
