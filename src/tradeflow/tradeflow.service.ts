@@ -1,15 +1,15 @@
 import { CreateTradeflowDto } from './dto/create-tradeflow.dto';
 import { UpdateTradeflowDto } from './dto/update-tradeflow.dto';
-import { TokenPayload } from 'src/auth/dtos/token.payload';
-import { PrismaService } from 'src/database/prisma.service';
+import { TokenPayload } from '../auth/dtos/token.payload';
+import { PrismaService } from '../database/prisma.service';
 import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { StrategyService } from 'src/strategy/strategy.service';
-import { AssetService } from 'src/asset/asset.service';
-import { EngineTharseoService } from 'src/engine-tharseo/engine-tharseo.service';
+import { StrategyService } from '../strategy/strategy.service';
+import { AssetService } from '../asset/asset.service';
+import { EngineTharseoService } from '../engine-tharseo/engine-tharseo.service';
 
 @Injectable()
 export class TradeflowService {

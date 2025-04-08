@@ -11,8 +11,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { AssetService } from './asset.service';
-import { AuthGuard } from 'src/auth/auth.guard';
-import { AdminGuard } from 'src/auth/guards/admin/admin.guard';
+import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/guards/admin/admin.guard';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { ValidationPipe } from '@nestjs/common';
 import { UpdateAssetDto } from './dto/update-asset.dto';

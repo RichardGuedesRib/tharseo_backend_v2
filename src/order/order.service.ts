@@ -6,14 +6,14 @@ import {
 import { CreateOrderDto } from './dto/create-order.dto';
 import { CreateOrderDatabaseDto } from './dto/create-order-database.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { UserService } from 'src/user/user.service';
-import { AssetService } from 'src/asset/asset.service';
-import { PrismaService } from 'src/database/prisma.service';
-import { TokenPayload } from 'src/auth/dtos/token.payload';
-import { BinanceapiService } from 'src/binance/binanceapi/binanceapi.service';
-import NewOrder from 'src/binance/dto/orders/new.order';
+import { UserService } from '../user/user.service';
+import { AssetService } from '../asset/asset.service';
+import { PrismaService } from '../database/prisma.service';
+import { TokenPayload } from '../auth/dtos/token.payload';
+import { BinanceapiService } from '../binance/binanceapi/binanceapi.service';
+import NewOrder from '../binance/dto/orders/new.order';
 import { Logger } from '@nestjs/common';
-import CancelOpenOrdersRequest from 'src/binance/dto/orders/cancel.open.order.request';
+import CancelOpenOrdersRequest from '../binance/dto/orders/cancel.open.order.request';
 
 @Injectable()
 export class OrderService {

@@ -1,11 +1,11 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateWalletDto } from './dto/create-wallet.dto';
 import { UpdateWalletDto } from './dto/update-wallet.dto';
-import { UserService } from 'src/user/user.service';
-import { TokenPayload } from 'src/auth/dtos/token.payload';
-import { PrismaService } from 'src/database/prisma.service';
+import { UserService } from '../user/user.service';
+import { TokenPayload } from '../auth/dtos/token.payload';
+import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '@prisma/client';
-import { AssetService } from 'src/asset/asset.service';
+import { AssetService } from '../asset/asset.service';
 
 @Injectable()
 export class WalletService {

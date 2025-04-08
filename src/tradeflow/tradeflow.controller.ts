@@ -12,7 +12,7 @@ import {
 import { TradeflowService } from './tradeflow.service';
 import { CreateTradeflowDto } from './dto/create-tradeflow.dto';
 import { UpdateTradeflowDto } from './dto/update-tradeflow.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('/v1/tradeflow')
 export class TradeflowController {

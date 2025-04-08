@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { EngineTharseoService } from './engine-tharseo.service';
 
 @Controller('/v1/engine-tharseo')

@@ -1,12 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
-import { BinanceapiService } from 'src/binance/binanceapi/binanceapi.service';
-import NewOrder from 'src/binance/dto/orders/new.order';
+import { PrismaService } from '../database/prisma.service';
+import { BinanceapiService } from '../binance/binanceapi/binanceapi.service';
+import NewOrder from '../binance/dto/orders/new.order';
 import { CreateOrderExchangeRequest } from './dto/create-order-exchange-request';
-import { OrderService } from 'src/order/order.service';
-import { CreateOrderDatabaseDto } from 'src/order/dto/create-order-database.dto';
-import { CheckOrder } from 'src/binance/dto/orders/check-order.request';
-import { UpdateOrderDto } from 'src/order/dto/update-order.dto';
+import { OrderService } from '../order/order.service';
+import { CreateOrderDatabaseDto } from '../order/dto/create-order-database.dto';
+import { CheckOrder } from '../binance/dto/orders/check-order.request';
+import { UpdateOrderDto } from '../order/dto/update-order.dto';
 import { Interval } from '@nestjs/schedule';
 
 @Injectable()

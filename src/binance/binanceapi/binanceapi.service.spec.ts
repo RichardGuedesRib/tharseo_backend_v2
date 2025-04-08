@@ -12,7 +12,7 @@ describe('BinanceapiService', () => {
     service = module.get<BinanceapiService>(BinanceapiService);
   });
 
-  it('should be defined', () => {
+  it('binanceapi service deve ser instanciado', () => {
     expect(service).toBeDefined();
   });
 });

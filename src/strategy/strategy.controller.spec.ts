@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StrategyController } from './strategy.controller';
 import { StrategyService } from './strategy.service';
+import { AuthGuard } from '../auth/auth.guard';
 
 describe('StrategyController', () => {
   let controller: StrategyController;
@@ -8,13 +9,25 @@ describe('StrategyController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [StrategyController],
-      providers: [StrategyService],
-    }).compile();
+      providers: [
+        {
+          provide: StrategyService,
+          useValue: {
+            findAll: jest.fn().mockResolvedValue([]),
+          },
+        },
+      ],
+    })
+      .overrideGuard(AuthGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      .compile();
 
     controller = module.get<StrategyController>(StrategyController);
   });
 
-  it('should be defined', () => {
+  it('strategy controller deve ser instanciado', () => {
     expect(controller).toBeDefined();
   });
 });

@@ -1,6 +1,6 @@
 import { Controller, Get, Inject, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 // Teste de deploy
 

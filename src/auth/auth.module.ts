@@ -1,10 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserService } from 'src/user/user.service';
-import { DatabaseModule } from 'src/database/database.module';
+import { UserService } from '../user/user.service';
+import { DatabaseModule } from '../database/database.module';
 import { AuthGuard } from './auth.guard';
-import { UserModule } from 'src/user/user.module';
+import { UserModule } from '../user/user.module';
 import { AdminGuard } from './guards/admin/admin.guard';
 
 @Module({

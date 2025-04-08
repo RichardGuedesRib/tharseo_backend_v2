@@ -12,7 +12,7 @@ import {
 import { StrategyService } from './strategy.service';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { UpdateStrategyDto } from './dto/update-strategy.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('/v1/strategy')
 export class StrategyController {

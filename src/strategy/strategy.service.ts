@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { CreateStrategyDto } from './dto/create-strategy.dto';
 import { UpdateStrategyDto } from './dto/update-strategy.dto';
-import { TokenPayload } from 'src/auth/dtos/token.payload';
-import { PrismaService } from 'src/database/prisma.service';
-import { UserService } from 'src/user/user.service';
+import { TokenPayload } from '../auth/dtos/token.payload';
+import { PrismaService } from '../database/prisma.service';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class StrategyService {
