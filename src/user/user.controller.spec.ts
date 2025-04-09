@@ -66,5 +66,8 @@ describe('UserController', () => {
   
     const result = await controller.getAllUsers();
     expect(result).toHaveLength(2);
+    // teste
+    // teste
+    // teste
   });
 });
