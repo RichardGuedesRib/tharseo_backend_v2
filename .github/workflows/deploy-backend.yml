@@ -1,97 +1,41 @@
-# name: Deploy Backend to Container in AzureVM
+name: Homolog -> Main
 
 on:
   push:
     branches:
-      - main
+      - homolog
 
 jobs:
-  tests-backend:
+  test-and-promote:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout código
+        uses: actions/checkout@v3
 
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
 
-  #     - name: Install dependencies
-  #       run: npm install
+      - name: Instalar dependências
+        run: npm ci
 
-  #     # - name: Run tests
-  #     #   run: npm run test
+      - name: Rodar testes
+        run: npm run test  
 
-  # build-backend:
-  #   needs: tests-backend
-  #   runs-on: ubuntu-latest
+      - name: Configurar Git
+        run: |
+          git config user.name "CI Bot"
+          git config user.email "ci@yourdomain.com"
 
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-
-  #     - name: Set up Node.js
-  #       uses: actions/setup-node@v2
-  #       with:
-  #         node-version: '20'
-
-  #     - name: Install dependencies
-  #       run: npm install
-
-  #     - name: Build NestJS project
-  #       run: npm run build
-
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v1
-
-  #     - name: Log in to Docker Hub
-  #       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin 
-
-  #     - name: Build Docker image
-  #       run: |
-  #         docker build -t richardguedesrib/tharseo-backend-app:latest .
-
-  #     - name: Push Docker image to Docker Hub
-  #       run: docker push richardguedesrib/tharseo-backend-app:latest
-
-  # deploy-backend:
-  #   needs: build-backend
-  #   runs-on: ubuntu-latest
-
-  #   steps:
-  #     - name: SSH into Azure VM - Stop and Remove Existing Containers
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.THARSEO_BACKEND_HOST }}
-  #         username: ${{ secrets.THARSEO_BACKEND_HOST_USER }}
-  #         password: ${{ secrets.THARSEO_BACKEND_PASS }}
-  #         script: |
-  #           CONTAINER_ID=$(docker ps -q --filter ancestor=richardguedesrib/tharseo-backend-app)
-  #           if [ ! -z "$CONTAINER_ID" ]; then
-  #             docker stop $CONTAINER_ID && docker rm $CONTAINER_ID
-  #           fi
-
-  #     - name: SSH into Azure VM - Pull Latest Docker Image
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.THARSEO_BACKEND_HOST }}
-  #         username: ${{ secrets.THARSEO_BACKEND_HOST_USER }}
-  #         password: ${{ secrets.THARSEO_BACKEND_PASS }}
-  #         script: |
-  #           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-  #           docker pull richardguedesrib/tharseo-backend-app:latest
-
-  #     - name: SSH into Azure VM and start Docker container with env vars
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.THARSEO_BACKEND_HOST }}
-  #         username: ${{ secrets.THARSEO_BACKEND_HOST_USER }}
-  #         password: ${{ secrets.THARSEO_BACKEND_PASS }}
-  #         script: |
-  #           docker run -d -p 8080:3000 \
-  #             -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
-  #             -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
-  #             -v /home/richardguedes/tharseo/data:/app/data \
-  #             richardguedesrib/tharseo-backend-app:latest
+      - name: Merge homolog -> main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge --no-ff origin/homolog -m "🔁 Auto-merge da homolog via CI"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -11,6 +11,11 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get('/')
+  /**
+   * Retorna todos os usu rios cadastrados.
+   *
+   * @returns Uma lista com todos os usu rios cadastrados.
+   */
   async getAllUsers() {
     return this.userService.getAllUsers();
   }
