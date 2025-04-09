@@ -1,42 +1,41 @@
+name: Homolog -> Main
+
+on:
+  push:
+    branches:
+      - homolog
+
 jobs:
   test-and-promote:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: testdb
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    timeout-minutes: 10
 
     steps:
-      - name: Checkout
+      - name: Checkout código
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: 'npm'
 
-      - name: Set env vars
-        run: |
-          echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/testdb" >> $GITHUB_ENV
-
-      - name: Install deps
+      - name: Instalar dependências
         run: npm ci
 
-      - name: Prisma generate
-        run: npx prisma generate
+      - name: Rodar testes
+        run: npm run test  
 
-      - name: Prisma migrate
-        run: npx prisma db push
+      - name: Configurar Git
+        run: |
+          git config user.name "CI Bot"
+          git config user.email "richard.silva46fatec@gmail.com"
 
-      - name: Run tests
-        run: npm run test
+      - name: Merge homolog -> main
+        run: |
+          git fetch origin
+          git checkout main
+          git merge --no-ff origin/homolog -m "🔁 Auto-merge da homolog via CI"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
