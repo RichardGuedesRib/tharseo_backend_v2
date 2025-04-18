@@ -19,13 +19,6 @@ describe('StrategyController', () => {
     isActive: true,
   };
 
-  const mockUser = {
-    id: 'user-123',
-    email: 'user@example.com',
-    name: 'User Test',
-    password: 'hashed-password',
-  };
-
   const createStrategyDTO: CreateStrategyDto = {
     name: 'Strategy 1',
     description: 'Description 1',
