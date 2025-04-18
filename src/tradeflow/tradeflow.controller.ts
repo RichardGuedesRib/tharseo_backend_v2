@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Request,
+  NotFoundException,
 } from '@nestjs/common';
 import { TradeflowService } from './tradeflow.service';
 import { CreateTradeflowDto } from './dto/create-tradeflow.dto';
@@ -60,7 +61,13 @@ export class TradeflowController {
    */
   async findOne(@Param('id') id: string, @Request() req) {
     const user = req.user;
-    return await this.tradeflowService.findOne(id, user);
+    const tradeflow = await this.tradeflowService.findOne(id, user);
+  
+    if (!tradeflow) {
+      throw new NotFoundException('Tradeflow não encontrado');
+    }
+  
+    return tradeflow;
   }
 
   @Patch(':id')
