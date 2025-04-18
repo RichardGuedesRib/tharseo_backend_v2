@@ -86,14 +86,5 @@ export class StrategyController {
     return await this.strategyService.update(id, updateStrategyDto, user);
   }
 
-  @Delete(':id')
-  /**
-   * Remove uma estrat gia baseada no id fornecido.
-   *
-   * @param id id da estrat gia a ser removida.
-   * @returns mensagem indicando que a estrat gia foi removida.
-   */
-  remove(@Param('id') id: string) {
-    return this.strategyService.remove(+id);
-  }
+ 
 }

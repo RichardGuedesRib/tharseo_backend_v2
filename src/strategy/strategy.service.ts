@@ -28,7 +28,6 @@ export class StrategyService {
    * @throws BadGatewayException Caso ocorra um erro ao criar a estrat gia.
    */
   async create(createStrategyDto: CreateStrategyDto, user: TokenPayload) {
-    try {
       const getUser = await this.userService.getUserById(user.userId);
       if (!getUser) {
         throw new NotFoundException('User not found');
@@ -40,11 +39,6 @@ export class StrategyService {
         data: createStrategyDto,
       });
       return strategy;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Error while create strategy: ' + error,
-      );
-    }
   }
 
   /**
@@ -56,7 +50,6 @@ export class StrategyService {
    * @throws BadGatewayException Caso ocorra um erro ao buscar as estrat gias.
    */
   async findAll(user: TokenPayload) {
-    try {
       const getUser = await this.userService.getUserById(user.userId);
       if (!getUser) {
         throw new NotFoundException('User not found');
@@ -65,9 +58,7 @@ export class StrategyService {
         where: { userId: user.userId },
       });
       return strategies;
-    } catch (error) {
-      throw new BadGatewayException('Erro ao buscar estrategias');
-    }
+  
   }
 
   /**
@@ -129,7 +120,5 @@ export class StrategyService {
     return updateStrategy;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} strategy`;
-  }
+
 }

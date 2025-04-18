@@ -75,7 +75,6 @@ describe('TradeflowService', () => {
     assetService = module.get<AssetService>(AssetService);
   });
 
-  // CREATE
   describe('create', () => {
     it('deve criar um novo tradeflow com sucesso', async () => {
       (strategyService.findOne as jest.Mock).mockResolvedValue({ id: 'strategy-001' });
