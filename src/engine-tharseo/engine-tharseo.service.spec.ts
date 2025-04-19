@@ -4,7 +4,7 @@ import { BinanceapiService } from '../binance/binanceapi/binanceapi.service';
 import { OrderService } from '../order/order.service';
 import { PrismaService } from '../database/prisma.service';
 import { CreateOrderExchangeRequest } from './dto/create-order-exchange-request';
-import NewOrder from 'src/binance/dto/orders/new.order';
+import { ConfigService } from '@nestjs/config';
 
 describe('EngineTharseoService', () => {
   let service: EngineTharseoService;
@@ -120,6 +120,17 @@ describe('EngineTharseoService', () => {
             tradeflow: {
               findMany: jest.fn(),
             },
+          },
+        },
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn((key: string) => {
+              const config = {
+                'some.key': 'some_value', 
+              };
+              return config[key];
+            }),
           },
         },
       ],
