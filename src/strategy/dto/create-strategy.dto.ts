@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsBoolean, IsOptional } from 'class-validator';
 
 export class CreateStrategyDto {
   @IsString()
@@ -10,15 +10,19 @@ export class CreateStrategyDto {
   description: string;
 
   @IsString()
-  userId: string;
+  @IsOptional()
+  userId?: string;
 
   @IsString()
+  @IsOptional()
   profit: string;
 
   @IsString()
+  @IsOptional()
   performance: string;
 
   @IsString()
+  @IsOptional()
   configStrategy: string;
 
   @IsBoolean()

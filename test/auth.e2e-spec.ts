@@ -1,5 +1,5 @@
 import * as request from 'supertest';
-import { setupE2ETest, cleanupE2ETest, app } from './helpers/test-utils';
+import { setupE2ETest, cleanupE2ETest, app, prisma } from './helpers/test-utils';
 import * as bcrypt from 'bcrypt';
 
 jest.setTimeout(60000);
@@ -11,6 +11,14 @@ describe('AuthController (e2e)', () => {
 
   afterAll(async () => {
     await cleanupE2ETest();
+  });
+
+  beforeEach(async () => {
+    await prisma.user.deleteMany();
+  });
+  
+  afterEach(async () => {
+    await prisma.user.deleteMany();
   });
 
   describe('POST /auth/signup', () => {
@@ -47,6 +55,22 @@ describe('AuthController (e2e)', () => {
     });
 
     it('deve retornar erro ao criar um novo usuário com email duplicado', async () => {
+      const userData1 = {
+        name: 'DSM',
+        lastName: 'Tharseo',
+        email: 'dsm@example.com',
+        phone: '11999999999',
+        password: '12345678',
+        levelUser: 'admin',
+        balance: 100.0,
+        isActive: true,
+      };
+
+      await request(app.getHttpServer())
+        .post('/auth/signup')
+        .send(userData1)
+        .expect(201);
+
       const userData = {
         name: 'DSM',
         lastName: 'Tharseo',
@@ -70,6 +94,22 @@ describe('AuthController (e2e)', () => {
 
   describe('POST /auth/signin', () => {
     it('deve fazer login com sucesso', async () => {
+      const userData = {
+        name: 'DSM',
+        lastName: 'Tharseo',
+        email: 'dsm@example.com',
+        phone: '11999999999',
+        password: '12345678',
+        levelUser: 'admin',
+        balance: 100.0,
+        isActive: true,
+      };
+
+      await request(app.getHttpServer())
+        .post('/auth/signup')
+        .send(userData)
+        .expect(201);
+
       const loginRequest = {
         email: 'dsm@example.com',
         password: '12345678',
@@ -88,6 +128,23 @@ describe('AuthController (e2e)', () => {
     });
 
     it('deve receber Unauthorized ao tentar logar com credenciais erradas', async () => {
+      const userData = {
+        name: 'DSM',
+        lastName: 'Tharseo',
+        email: 'dsm@example.com',
+        phone: '11999999999',
+        password: '12345678',
+        levelUser: 'admin',
+        balance: 100.0,
+        isActive: true,
+      };
+
+      await request(app.getHttpServer())
+        .post('/auth/signup')
+        .send(userData)
+        .expect(201);
+
+
       const loginRequest = {
         email: 'dsm@example.com',
         password: '1234',

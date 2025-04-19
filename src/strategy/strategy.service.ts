@@ -28,17 +28,15 @@ export class StrategyService {
    * @throws BadGatewayException Caso ocorra um erro ao criar a estrat gia.
    */
   async create(createStrategyDto: CreateStrategyDto, user: TokenPayload) {
-      const getUser = await this.userService.getUserById(user.userId);
-      if (!getUser) {
-        throw new NotFoundException('User not found');
-      }
-
-      createStrategyDto.userId = user.userId;
-
-      const strategy = await this.prisma.strategy.create({
-        data: createStrategyDto,
-      });
-      return strategy;
+    const getUser = await this.userService.getUserById(user.userId);
+    if (!getUser) {
+      throw new NotFoundException('User not found');
+    }
+    
+    const strategy = await this.prisma.strategy.create({
+      data: { ...createStrategyDto, userId: user.userId },
+    });
+    return strategy;
   }
 
   /**
@@ -50,15 +48,14 @@ export class StrategyService {
    * @throws BadGatewayException Caso ocorra um erro ao buscar as estrat gias.
    */
   async findAll(user: TokenPayload) {
-      const getUser = await this.userService.getUserById(user.userId);
-      if (!getUser) {
-        throw new NotFoundException('User not found');
-      }
-      const strategies = await this.prisma.strategy.findMany({
-        where: { userId: user.userId },
-      });
-      return strategies;
-  
+    const getUser = await this.userService.getUserById(user.userId);
+    if (!getUser) {
+      throw new NotFoundException('User not found');
+    }
+    const strategies = await this.prisma.strategy.findMany({
+      where: { userId: user.userId },
+    });
+    return strategies;
   }
 
   /**
@@ -119,6 +116,4 @@ export class StrategyService {
     });
     return updateStrategy;
   }
-
-
 }

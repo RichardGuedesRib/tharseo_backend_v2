@@ -29,10 +29,15 @@ export class StrategyController {
    * @throws NotFoundException caso o usu rio n o seja encontrado.
    * @throws BadGatewayException caso ocorra um erro ao criar a estrat gia.
    */
-  create(@Body() createStrategyDto: CreateStrategyDto, @Request() req) {
-    const user = req.user;
-    return this.strategyService.create(createStrategyDto, user);
+  async create(@Body() createStrategyDto: CreateStrategyDto, @Request() req) {
+    try {
+      return await this.strategyService.create(createStrategyDto, req.user);
+    } catch (err) {
+      console.error('Erro ao criar estratégia:', err.response || err.message || err);
+      throw err;
+    }
   }
+  
 
   @Get()
   @UseGuards(AuthGuard)
