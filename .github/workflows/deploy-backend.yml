@@ -9,6 +9,24 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: root
+          POSTGRES_DB: test_db
+        options: >-
+          --health-cmd="pg_isready -U testuser" 
+          --health-interval=10s 
+          --health-timeout=5s 
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgres://testuser:testpass@localhost:5432/testdb
+      NODE_ENV: test
 
     steps:
       - name: Checkout código
@@ -23,8 +41,17 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Rodar testes
-        run: npm run test  
+      - name: Gerar Prisma Client
+        run: npx prisma generate
+
+      - name: Rodar migrations no banco de teste
+        run: npx prisma migrate deploy
+
+      - name: Rodar testes unitários
+        run: npm run test
+
+      - name: Rodar testes e2e
+        run: npm run test:e2e
 
       - name: Disparar deploy Render
         if: success()

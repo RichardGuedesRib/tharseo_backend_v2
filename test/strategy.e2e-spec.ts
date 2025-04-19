@@ -60,128 +60,136 @@ describe('StrategyController (e2e)', () => {
     return loginResponse.body.token;
   }
 
-  it('deve criar uma nova estratégia com sucesso', async () => {
-    const strategyData = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-      isActive: true,
-    };
+  describe('Create Strategy', () => {
+    it('deve criar uma nova estratégia com sucesso', async () => {
+      const strategyData = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+        isActive: true,
+      };
 
-    token = await getToken();
+      token = await getToken();
 
-    const response = await request(app.getHttpServer())
-      .post('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .send(strategyData)
-      .expect(201);
+      const response = await request(app.getHttpServer())
+        .post('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .send(strategyData)
+        .expect(201);
 
-    strategyId = response.body.id;
+      strategyId = response.body.id;
 
-    expect(response.body).toHaveProperty('id');
-    expect(response.body.name).toBe(strategyData.name);
-    expect(response.body.description).toBe(strategyData.description);
-    expect(response.body.isActive).toBe(true);
-    expect(response.body).toHaveProperty('userId');
+      expect(response.body).toHaveProperty('id');
+      expect(response.body.name).toBe(strategyData.name);
+      expect(response.body.description).toBe(strategyData.description);
+      expect(response.body.isActive).toBe(true);
+      expect(response.body).toHaveProperty('userId');
+    });
+
+    it('deve retornar um BadRequestException ao criar uma nova estratégia com dados inválidos', async () => {
+      const strategyData = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+      };
+
+      token = await getToken();
+
+      const response = await request(app.getHttpServer())
+        .post('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .send(strategyData)
+        .expect(400);
+
+      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('error');
+      expect(response.body).toHaveProperty('statusCode');
+      expect(response.body.statusCode).toBe(400);
+      expect(response.body.error).toBe('Bad Request');
+    });
   });
 
-  it('deve retornar um BadRequestException ao criar uma nova estratégia com dados inválidos', async () => {
-    const strategyData = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-    };
+  describe('Get Strategys User (e2e) - GET /v1/strategy', () => {
+    it('deve retornar todas as estrategias do usuário', async () => {
+      token = await getToken();
 
-    token = await getToken();
+      const strategyData = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+        isActive: true,
+      };
 
-    const response = await request(app.getHttpServer())
-      .post('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .send(strategyData)
-      .expect(400);
+      await request(app.getHttpServer())
+        .post('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .send(strategyData)
+        .expect(201);
 
-    expect(response.body).toHaveProperty('message');
-    expect(response.body).toHaveProperty('error');
-    expect(response.body).toHaveProperty('statusCode');
-    expect(response.body.statusCode).toBe(400);
-    expect(response.body.error).toBe('Bad Request');
+      const response = await request(app.getHttpServer())
+        .get('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+
+      expect(response.body.length).toBeGreaterThan(0);
+    });
   });
 
-  it('deve retornar todas as estrategias do usuário', async () => {
-    token = await getToken();
+  describe('Get Strategy By Id (e2e) - GET /v1/strategy/:id', () => {
+    it('deve retornar uma estrategia pelo id', async () => {
+      token = await getToken();
 
-    const strategyData = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-      isActive: true,
-    };
+      const strategyData = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+        isActive: true,
+      };
 
-    await request(app.getHttpServer())
-      .post('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .send(strategyData)
-      .expect(201);
+      const responseStrategy = await request(app.getHttpServer())
+        .post('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .send(strategyData)
+        .expect(201);
 
-    const response = await request(app.getHttpServer())
-      .get('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+      const response = await request(app.getHttpServer())
+        .get(`/v1/strategy/${responseStrategy.body.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
 
-    expect(response.body.length).toBeGreaterThan(0);
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('name');
+    });
   });
 
-  it('deve retornar uma estrategia pelo id', async () => {
-    token = await getToken();
+  describe('Delete Strategy By Id (e2e) - DELETE /v1/strategy/:id', () => {
+    it('deve atualizar uma estrategia pelo id', async () => {
+      token = await getToken();
 
-    const strategyData = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-      isActive: true,
-    };
+      const strategyDataOriginal = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+        isActive: true,
+      };
 
-    const responseStrategy = await request(app.getHttpServer())
-      .post('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .send(strategyData)
-      .expect(201);
-    
-    const response = await request(app.getHttpServer())
-      .get(`/v1/strategy/${responseStrategy.body.id}`)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(200);
+      const responseStrategy = await request(app.getHttpServer())
+        .post('/v1/strategy')
+        .set('Authorization', `Bearer ${token}`)
+        .send(strategyDataOriginal)
+        .expect(201);
 
-    expect(response.body).toHaveProperty('id');
-    expect(response.body).toHaveProperty('name');
-  });
+      const strategyData = {
+        name: 'Nome de Estrategia teste',
+        description: 'Descricao da estrategia teste',
+        isActive: false,
+      };
 
-  it('deve atualizar uma estrategia pelo id', async () => {
-    token = await getToken();
+      const response = await request(app.getHttpServer())
+        .patch(`/v1/strategy/${responseStrategy.body.id}`)
+        .send(strategyData)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
 
-    const strategyDataOriginal = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-      isActive: true,
-    };
-
-    const responseStrategy = await request(app.getHttpServer())
-      .post('/v1/strategy')
-      .set('Authorization', `Bearer ${token}`)
-      .send(strategyDataOriginal)
-      .expect(201);
-
-    const strategyData = {
-      name: 'Nome de Estrategia teste',
-      description: 'Descricao da estrategia teste',
-      isActive: false,
-    };
-
-    const response = await request(app.getHttpServer())
-      .patch(`/v1/strategy/${responseStrategy.body.id}`)
-      .send(strategyData)
-      .set('Authorization', `Bearer ${token}`)
-      .expect(200);
-
-    expect(response.body).toHaveProperty('id');
-    expect(response.body).toHaveProperty('name');
-    expect(response.body).toHaveProperty('isActive');
-    expect(response.body.isActive).toBe(false);
+      expect(response.body).toHaveProperty('id');
+      expect(response.body).toHaveProperty('name');
+      expect(response.body).toHaveProperty('isActive');
+      expect(response.body.isActive).toBe(false);
+    });
   });
 });

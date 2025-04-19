@@ -21,7 +21,7 @@ describe('AuthController (e2e)', () => {
     await prisma.user.deleteMany();
   });
 
-  describe('POST /auth/signup', () => {
+  describe('Register User (e2e) - POST /auth/signup', () => {
     it('deve criar um novo usuário', async () => {
       const userData = {
         name: 'DSM',
@@ -92,7 +92,7 @@ describe('AuthController (e2e)', () => {
     });
   });
 
-  describe('POST /auth/signin', () => {
+  describe('Login User (e2e) - POST /auth/signin', () => {
     it('deve fazer login com sucesso', async () => {
       const userData = {
         name: 'DSM',
