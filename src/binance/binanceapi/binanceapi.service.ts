@@ -136,55 +136,7 @@ export class BinanceapiService {
       );
     }
   }
-
-  /**
-   * Abre uma ordem OCO na Binance
-   *
-   * @param newOcoOrder dados da ordem OCO
-   * @returns dados da ordem OCO aberta
-   * @throws BadRequestException se o tipo de ordem for invalido
-   * @throws InternalServerErrorException se houver erro ao abrir ordem OCO
-   */
-  async newOcoOrder(newOcoOrder: NewOcoOrder) {
-    this.logger.log(
-      `Pedido de ordem oco recebido: ${newOcoOrder.symbol}, ${newOcoOrder.side}, ${newOcoOrder.price}, ${newOcoOrder.takeProfit}, ${newOcoOrder.takeProfitLimit} ${newOcoOrder.quantity}`,
-    );
-    try {
-      const client = new Spot(newOcoOrder.apiKey, newOcoOrder.apiSecret, {
-        baseURL: this.binanceBaseUrl,
-      });
-
-      const getprice = await client.tickerPrice('BNBUSDT');
-
-      const response = await client.newOCOOrder(
-        newOcoOrder.symbol,
-        newOcoOrder.side,
-        newOcoOrder.quantity,
-        'LIMIT_MAKER',
-        'STOP_LOSS_LIMIT',
-        {
-          abovePrice: newOcoOrder.price,
-          belowPrice: newOcoOrder.takeProfit,
-          belowStopPrice: newOcoOrder.takeProfitLimit,
-          belowTimeInForce: 'GTC',
-        },
-      );
-
-      this.logger.log('Ordem Oco Aberta na Binance', response.data);
-
-      return response.data;
-    } catch (error) {
-      this.logger.error(
-        'Erro ao executar ordem Oco',
-        error.response?.data || error.message,
-      );
-
-      throw new InternalServerErrorException(
-        `Erro ao abrir ordem: ${error.message}`,
-      );
-    }
-  }
-
+  
   /**
    * Cancela uma ordem na Binance
    *
