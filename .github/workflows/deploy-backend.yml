@@ -19,15 +19,15 @@ jobs:
           POSTGRES_PASSWORD: root
           POSTGRES_DB: test_db
         options: >-
-          --health-cmd="pg_isready -U testuser" 
-          --health-interval=10s 
-          --health-timeout=5s 
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
           --health-retries=5
 
     env:
-        CI: true
-        DATABASE_URL: postgres://postgres:root@postgres:5432/test_db
-        NODE_ENV: test
+      CI: true
+      DATABASE_URL: postgres://postgres:root@postgres:5432/test_db
+      NODE_ENV: test
 
     steps:
       - name: Checkout código
@@ -44,6 +44,13 @@ jobs:
 
       - name: Gerar Prisma Client
         run: npx prisma generate
+
+      - name: Esperar Postgres estar disponível
+        run: |
+          echo "Aguardando Postgres iniciar..."
+          until pg_isready -h postgres -p 5432 -U postgres; do
+            sleep 1
+          done
 
       - name: Rodar migrations no banco de teste
         run: npx prisma migrate deploy
