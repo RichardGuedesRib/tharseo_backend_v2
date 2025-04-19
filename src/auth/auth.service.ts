@@ -3,6 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
   BadRequestException,
+  Logger,
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { UserService } from '../user/user.service';
@@ -14,10 +15,13 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   @Inject()
   private readonly userService: UserService;
   @Inject()
   private readonly jwtService: JwtService;
+
 
   /**
    * Cria um novo usuario no banco de dados
@@ -30,6 +34,7 @@ export class AuthService {
     try {
       const hashPassword = await bcrypt.hash(data.password, 10);
       data.password = hashPassword;
+      this.logger.log(`Criando usuario: ${JSON.stringify(data)}`);
       return await this.userService.createUser(data);
     } catch (error) {
       throw new BadRequestException('Erro ao cadastrar usuário');
@@ -57,6 +62,9 @@ export class AuthService {
       levelUser: user.levelUser,
       isActive: user.isActive,
     };
+
+    this.logger.log(`Efetuou login na plataforma: ${JSON.stringify(payload)}`);
+
     return {
       user: {
         id: user.id,

@@ -70,13 +70,15 @@ describe('AuthGuard', () => {
         },
       };
 
+      jest.spyOn(console, 'error').mockImplementation(() => {});
+
       mockJwtService.verifyAsync.mockRejectedValue(new Error('Invalid token'));
 
       await expect(
         guard.canActivate({
           switchToHttp: () => ({ getRequest: () => mockRequest }),
         } as any),
-      ).rejects.toThrowError(new UnauthorizedException('Invalid Token'));
+      ).rejects.toThrow(new UnauthorizedException('Invalid Token'));
     });
   });
 

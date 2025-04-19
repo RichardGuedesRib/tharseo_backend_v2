@@ -5,9 +5,10 @@ import { EngineTharseoController } from './engine-tharseo.controller';
 import { BinanceModule } from '../binance/binance.module';
 import { OrderModule } from '../order/order.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule, BinanceModule, OrderModule, ScheduleModule.forRoot()],
+  imports: [DatabaseModule, BinanceModule, OrderModule, ScheduleModule.forRoot(), ConfigModule,],
   providers: [EngineTharseoService],
   exports: [EngineTharseoService],
   controllers: [EngineTharseoController],

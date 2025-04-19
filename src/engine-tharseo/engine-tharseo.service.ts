@@ -8,6 +8,7 @@ import { CreateOrderDatabaseDto } from '../order/dto/create-order-database.dto';
 import { CheckOrder } from '../binance/dto/orders/check-order.request';
 import { UpdateOrderDto } from '../order/dto/update-order.dto';
 import { Interval } from '@nestjs/schedule';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EngineTharseoService {
@@ -20,6 +21,7 @@ export class EngineTharseoService {
     prisma: PrismaService,
     binanceApiService: BinanceapiService,
     orderService: OrderService,
+    private readonly configService: ConfigService,
   ) {
     this.prisma = prisma;
     this.binanceApiService = binanceApiService;
@@ -230,6 +232,9 @@ export class EngineTharseoService {
    */
   @Interval(20000)
   async checkOrders() {
+    if (this.configService.get('NODE_ENV') === 'test') {
+      return;
+    }
     const orders = await this.orderService.getPendingOrdersCreated();
 
     this.logger.log(`Checando ordens pendentes: ${orders.length}`);

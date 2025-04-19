@@ -35,7 +35,6 @@ export class AuthController {
   @HttpCode(200)
   async signIn(@Body() data: LoginRequest) {
     const auth = await this.authService.signIn(data);
-    console.log('Auth', auth);
     return auth;
   }
 }

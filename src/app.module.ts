@@ -13,6 +13,7 @@ import { TradeflowModule } from './tradeflow/tradeflow.module';
 import { OrderModule } from './order/order.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { EngineTharseoModule } from './engine-tharseo/engine-tharseo.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -33,6 +34,9 @@ import { EngineTharseoModule } from './engine-tharseo/engine-tharseo.module';
     OrderModule,
     PrometheusModule.register(),
     EngineTharseoModule,
+    ConfigModule.forRoot({
+      isGlobal: true, 
+    }),
   ],
   controllers: [],
   providers: [],
