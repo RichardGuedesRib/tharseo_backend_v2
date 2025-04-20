@@ -5,7 +5,6 @@ import {
   prisma,
   setupE2ETest,
 } from './helpers/test-utils';
-global.crypto = require("crypto-browserify");
 
 jest.setTimeout(60000);
 

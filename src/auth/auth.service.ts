@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { UserService } from '../user/user.service';
-import { v4 as uuidv4 } from 'uuid';
 import { LoginRequest } from './dtos/login.request';
 import { LoginResponse } from './dtos/login.response';
 import * as bcrypt from 'bcrypt';

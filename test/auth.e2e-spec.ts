@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 import { setupE2ETest, cleanupE2ETest, app, prisma } from './helpers/test-utils';
-global.crypto = require("crypto-browserify");
 
 jest.setTimeout(60000);
 
