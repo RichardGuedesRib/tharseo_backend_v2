@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { SignatureService } from '../binance/signature/signature.service';
 import { BinanceapiController } from './binanceapi/binanceapi.controller';
 import { BinanceapiService } from './binanceapi/binanceapi.service';
 import { BinanceWsService } from './binanceapi/binancews.service';
