@@ -9,6 +9,7 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+
     services:
       postgres:
         image: postgres:15
@@ -19,10 +20,10 @@ jobs:
           POSTGRES_PASSWORD: root
           POSTGRES_DB: test_db
         options: >-
-            --health-cmd="pg_isready -d test_db -U postgres"
-            --health-interval=10s
-            --health-timeout=5s
-            --health-retries=10
+          --health-cmd="pg_isready -d test_db -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     env:
       CI: true
