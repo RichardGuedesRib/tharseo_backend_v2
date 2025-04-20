@@ -19,10 +19,10 @@ jobs:
           POSTGRES_PASSWORD: root
           POSTGRES_DB: test_db
         options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+            --health-cmd="pg_isready -d test_db -U postgres"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=10
 
     env:
       CI: true
@@ -45,11 +45,19 @@ jobs:
       - name: Gerar Prisma Client
         run: npx prisma generate
 
+      - name: Instalar cliente PostgreSQL
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Ver logs do serviço postgres (debug temporário)
+        run: docker logs $(docker ps -q --filter "ancestor=postgres:15") || true
+
       - name: Esperar Postgres estar disponível
         run: |
           echo "Aguardando Postgres iniciar..."
-          until pg_isready -h postgres -p 5432 -U postgres; do
-            sleep 1
+          for i in {1..30}; do
+            pg_isready -h postgres -p 5432 -U postgres && break
+            echo "Tentativa $i: Postgres ainda não está disponível"
+            sleep 2
           done
 
       - name: Rodar migrations no banco de teste
