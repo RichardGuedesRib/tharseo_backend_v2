@@ -18,11 +18,8 @@ export let prisma: PrismaService;
  * deletando todos os usuários existentes.
  */
 export const setupE2ETest = async () => {
-  const isCI = process.env.CI === 'true';
 
-  process.env.DATABASE_URL = isCI
-  ? 'postgresql://postgres:root@postgres:5432/test_db'
-  : 'postgresql://postgres:root@localhost/test_db';
+  process.env.DATABASE_URL = 'postgresql://postgres:root@localhost:5432/test_db';
 
 
   try {
