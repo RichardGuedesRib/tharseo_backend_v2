@@ -51,7 +51,7 @@ jobs:
         run: npx prisma generate
 
       - name: Rodar migrations no banco de teste
-        run: npx prisma migrate deploy
+        run: npx prisma db push
 
       - name: Rodar testes unitários
         run: npm run test
