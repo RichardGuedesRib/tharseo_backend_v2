@@ -58,7 +58,7 @@ jobs:
 
       - name: Verificar tabelas no banco de dados
         run: |
-           psql -h localhost -U postgres -d test_db -c '\dt'
+          PGPASSWORD=root psql -h localhost -U postgres -d test_db -c '\dt'
 
       - name: Rodar testes e2e
         run: npm run test:e2e
