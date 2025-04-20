@@ -1,9 +1,5 @@
-import { Body, Controller, Get, Inject, Query } from '@nestjs/common';
+import { Controller, Get, Inject } from '@nestjs/common';
 import { BinanceapiService } from './binanceapi.service';
-import NewOrder from '../dto/orders/new.order';
-import CancelOrderRequest from '../dto/orders/cancel.order.request';
-import GetOrdersRequest from '../dto/market/get.all.orders.request';
-import CancelOpenOrdersRequest from '../dto/orders/cancel.open.order.request';
 
 @Controller('binanceapi')
 export class BinanceapiController {
@@ -14,6 +10,11 @@ export class BinanceapiController {
   private readonly apiSecret = process.env.BINANCE_API_SECRET;
 
   @Get("check")
+  /**
+   * Verifica se a conex o com a API da Binance est  OK.
+   *
+   * @returns um objeto com a chave "status" e valor "OK" se a conex o estiver OK.
+   */
   async check() {
     return this.binanceapiService.checkConnection();
   }

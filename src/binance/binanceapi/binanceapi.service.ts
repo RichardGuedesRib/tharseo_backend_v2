@@ -274,9 +274,31 @@ export class BinanceapiService {
     }
   }
 
+  /**
+   * Verifica a conectividade com a API Binance através de um ping.
+   *
+   * @returns Um objeto indicando o sucesso ou falha do ping.
+   *          - { success: true, message: 'Ping sucesso' } em caso de sucesso.
+   *          - { error: true, message: 'Erro ao conectar' } em caso de falha.
+   * @throws Error logado no console em caso de falha de ping.
+   */
+
   async checkConnection() {
     const client = new Spot('', '', { baseURL: this.binanceBaseUrl });
-    const testConnection = await client.getConnection();
-    return testConnection;
+
+    try {
+      const response = await client.ping();
+      console.log('Ping sucesso:', response.statusText);
+      return {
+        success: true,
+        message: 'Ping sucesso',
+      };
+    } catch (error) {
+      console.error('Erro no ping:', error);
+      return {
+        error: true,
+        message: 'Erro ao conectar',
+      };
+    }
   }
 }
