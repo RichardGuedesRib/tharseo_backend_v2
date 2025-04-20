@@ -13,5 +13,10 @@ export class BinanceapiController {
   private readonly apiKey = process.env.BINANCE_API_KEY;
   private readonly apiSecret = process.env.BINANCE_API_SECRET;
 
+  @Get("check")
+  async check() {
+    return this.binanceapiService.checkConnection();
+  }
+
   
 }

@@ -6,7 +6,6 @@ import {
 import { Logger } from '@nestjs/common';
 const { Spot } = require('@binance/connector');
 import NewOrder from '../dto/orders/new.order';
-import NewOcoOrder from '../dto/orders/new.oco.order';
 import CancelOrderRequest from '../dto/orders/cancel.order.request';
 import GetOrdersRequest from '../dto/market/get.all.orders.request';
 import CancelOpenOrdersRequest from '../dto/orders/cancel.open.order.request';
@@ -122,7 +121,9 @@ export class BinanceapiService {
         throw new BadRequestException('Tipo de ordem inválido');
       }
 
-      this.logger.log(`Ordem Aberta na Binance:' ${JSON.stringify(response.data)}`);
+      this.logger.log(
+        `Ordem Aberta na Binance:' ${JSON.stringify(response.data)}`,
+      );
 
       return response.data;
     } catch (error) {
@@ -136,7 +137,7 @@ export class BinanceapiService {
       );
     }
   }
-  
+
   /**
    * Cancela uma ordem na Binance
    *
@@ -235,36 +236,47 @@ export class BinanceapiService {
     }
   }
 
- /**
- * Verifica o status de uma ordem específica na Binance.
- *
- * @param orderId ID da ordem para verificar.
- * @param symbol Par de moedas da ordem.
- * @param apiKey Chave de API da Binance.
- * @param apiSecret Chave secreta da API da Binance.
- * @returns Dados da ordem ou erro se a ordem não for encontrada.
- * @throws InternalServerErrorException se houver erro ao verificar a ordem.
- */
- async checkOrder(checkOrder: CheckOrder) {
-  try {
-    this.logger.log(`Verificando ordem: ${checkOrder.orderId}, ${checkOrder.symbol}`);
+  /**
+   * Verifica o status de uma ordem específica na Binance.
+   *
+   * @param orderId ID da ordem para verificar.
+   * @param symbol Par de moedas da ordem.
+   * @param apiKey Chave de API da Binance.
+   * @param apiSecret Chave secreta da API da Binance.
+   * @returns Dados da ordem ou erro se a ordem não for encontrada.
+   * @throws InternalServerErrorException se houver erro ao verificar a ordem.
+   */
+  async checkOrder(checkOrder: CheckOrder) {
+    try {
+      this.logger.log(
+        `Verificando ordem: ${checkOrder.orderId}, ${checkOrder.symbol}`,
+      );
 
-    const client = new Spot(checkOrder.apiKey, checkOrder.apiSecret, {
-      baseURL: this.binanceBaseUrl,
-    });
+      const client = new Spot(checkOrder.apiKey, checkOrder.apiSecret, {
+        baseURL: this.binanceBaseUrl,
+      });
 
-    const response = await client.getOrder(checkOrder.symbol, { orderId: checkOrder.orderId });
+      const response = await client.getOrder(checkOrder.symbol, {
+        orderId: checkOrder.orderId,
+      });
 
-    this.logger.log(`Status da ordem:', ${JSON.stringify(response.data)}`);
+      this.logger.log(`Status da ordem:', ${JSON.stringify(response.data)}`);
 
-    return response.data;
-  } catch (error) {
-    this.logger.error('Erro ao verificar a ordem:', error.response?.data || error.message);
-    throw new InternalServerErrorException(
-      `Erro ao verificar a ordem ${checkOrder.orderId} para ${checkOrder.symbol}: ${error.message}`,
-    );
+      return response.data;
+    } catch (error) {
+      this.logger.error(
+        'Erro ao verificar a ordem:',
+        error.response?.data || error.message,
+      );
+      throw new InternalServerErrorException(
+        `Erro ao verificar a ordem ${checkOrder.orderId} para ${checkOrder.symbol}: ${error.message}`,
+      );
+    }
   }
-}
 
-
+  async checkConnection() {
+    const client = new Spot('', '', { baseURL: this.binanceBaseUrl });
+    const testConnection = await client.getConnection();
+    return testConnection;
+  }
 }

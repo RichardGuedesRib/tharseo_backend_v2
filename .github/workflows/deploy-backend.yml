@@ -10,25 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: root
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd="pg_isready -d test_db -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=10
-        command: ["postgres"]
-
     env:
       CI: true
-      DATABASE_URL: postgres://postgres:root@postgres:5432/test_db
+      DATABASE_URL: postgres://postgres:root@localhost:5432/test_db
       NODE_ENV: test
 
     steps:
@@ -44,23 +28,27 @@ jobs:
       - name: Instalar dependências
         run: npm ci
 
-      - name: Gerar Prisma Client
-        run: npx prisma generate
-
-      - name: Instalar cliente PostgreSQL
-        run: sudo apt-get update && sudo apt-get install -y postgresql-client
-
-      - name: Ver logs do serviço postgres (debug temporário)
-        run: docker logs $(docker ps -q --filter "ancestor=postgres:15") || true
+      - name: Subir Postgres manualmente
+        run: |
+          docker run -d \
+            --name postgres-test \
+            -e POSTGRES_USER=postgres \
+            -e POSTGRES_PASSWORD=root \
+            -e POSTGRES_DB=test_db \
+            -p 5432:5432 \
+            postgres:15
 
       - name: Esperar Postgres estar disponível
         run: |
           echo "Aguardando Postgres iniciar..."
           for i in {1..30}; do
-            pg_isready -h postgres -p 5432 -U postgres && break
+            pg_isready -h localhost -p 5432 -U postgres && break
             echo "Tentativa $i: Postgres ainda não está disponível"
             sleep 2
           done
+
+      - name: Gerar Prisma Client
+        run: npx prisma generate
 
       - name: Rodar migrations no banco de teste
         run: npx prisma migrate deploy
