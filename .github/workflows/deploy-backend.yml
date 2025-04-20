@@ -56,6 +56,10 @@ jobs:
       - name: Rodar testes unitários
         run: npm run test
 
+      - name: Verificar tabelas no banco de dados
+        run: |
+        psql -h localhost -U postgres -d test_db -c '\dt'
+
       - name: Rodar testes e2e
         run: npm run test:e2e
 
