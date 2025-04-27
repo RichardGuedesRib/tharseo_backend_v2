@@ -100,7 +100,6 @@ describe('TradeflowService', () => {
     });
   });
 
-  // FIND ALL
   describe('findAll', () => {
     it('deve retornar todos os tradeflows do usuário', async () => {
       const mockResult = [{ id: '1' }, { id: '2' }];
@@ -118,7 +117,6 @@ describe('TradeflowService', () => {
     });
   });
 
-  // FIND ONE
   describe('findOne', () => {
     it('deve retornar o tradeflow se encontrado', async () => {
       const mockTradeflow = { id: '1', strategy: { userId: mockUser.userId } };
@@ -136,7 +134,6 @@ describe('TradeflowService', () => {
     });
   });
 
-  // UPDATE
   describe('update', () => {
     it('deve atualizar o tradeflow se existir e pertencer ao usuário', async () => {
       const tradeflow = {
@@ -171,7 +168,6 @@ describe('TradeflowService', () => {
     });
   });
 
-  // REMOVE
   describe('remove', () => {
     it('deve remover o tradeflow se existir e pertencer ao usuário', async () => {
       const tradeflow = {

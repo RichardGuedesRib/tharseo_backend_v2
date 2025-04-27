@@ -95,7 +95,7 @@ describe('AuthService', () => {
       const mockUser = {
         id: 1,
         email: 'test@example.com',
-        password: await bcrypt.hash('123456', 10), // Senha criptografada
+        password: await bcrypt.hash('123456', 10),
         name: 'Test User',
         lastName: 'Example',
         levelUser: 1,

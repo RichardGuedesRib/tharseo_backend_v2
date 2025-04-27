@@ -90,7 +90,7 @@ describe('TradeflowController (e2e)', () => {
   }
 
   describe('Create Tradeflow (e2e) - POST /v1/tradeflow', () => {
-    it('deve criar uma nova estratégia com sucesso', async () => {
+    it('deve criar uma nova automação com sucesso', async () => {
       let token = await getToken();
       let asset = await getAsset(token);
       let strategy = await getStrategy(token);

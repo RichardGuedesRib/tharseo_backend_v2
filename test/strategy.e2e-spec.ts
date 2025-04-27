@@ -158,7 +158,7 @@ describe('StrategyController (e2e)', () => {
     });
   });
 
-  describe('Delete Strategy By Id (e2e) - DELETE /v1/strategy/:id', () => {
+  describe('Update Strategy By Id (e2e) - PATCH /v1/strategy/:id', () => {
     it('deve atualizar uma estrategia pelo id', async () => {
       token = await getToken();
 

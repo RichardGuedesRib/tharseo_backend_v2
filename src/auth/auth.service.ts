@@ -11,6 +11,8 @@ import { LoginRequest } from './dtos/login.request';
 import { LoginResponse } from './dtos/login.response';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { Counter, Histogram } from 'prom-client';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +23,12 @@ export class AuthService {
   @Inject()
   private readonly jwtService: JwtService;
 
+  constructor(
+    @InjectMetric('auth_http_count')
+    public counter: Counter<string>,
+    @InjectMetric('auth_http_duration_seconds')
+    private readonly authHttpDuration: Histogram<string>,
+  ) {}
 
   /**
    * Cria um novo usuario no banco de dados
@@ -30,6 +38,8 @@ export class AuthService {
    */
 
   async signUp(data: Prisma.UserCreateInput) {
+    const end = this.authHttpDuration.startTimer({ method: 'signUp' });
+    this.counter.inc({ method: 'signUp' });
     try {
       const hashPassword = await bcrypt.hash(data.password, 10);
       data.password = hashPassword;
@@ -37,6 +47,8 @@ export class AuthService {
       return await this.userService.createUser(data);
     } catch (error) {
       throw new BadRequestException('Erro ao cadastrar usuário');
+    } finally {
+      end();
     }
   }
 
@@ -48,6 +60,8 @@ export class AuthService {
    * @throws UnauthorizedException caso o email ou senha estejam incorretos
    */
   async signIn(data: LoginRequest): Promise<LoginResponse> {
+    const end = this.authHttpDuration.startTimer({ method: 'signIn' });
+    this.counter.inc({ method: 'signIn' });
     const user = await this.userService.getUserByEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Email ou senha incorretos');
@@ -64,6 +78,7 @@ export class AuthService {
 
     this.logger.log(`Efetuou login na plataforma: ${JSON.stringify(payload)}`);
 
+    end();
     return {
       user: {
         id: user.id,

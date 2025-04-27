@@ -10,11 +10,20 @@ import CancelOrderRequest from '../dto/orders/cancel.order.request';
 import GetOrdersRequest from '../dto/market/get.all.orders.request';
 import CancelOpenOrdersRequest from '../dto/orders/cancel.open.order.request';
 import { CheckOrder } from '../dto/orders/check-order.request';
+import { InjectMetric } from "@willsoto/nestjs-prometheus";
+import { Counter, Histogram } from "prom-client";
 
 @Injectable()
 export class BinanceapiService {
   private readonly binanceBaseUrl = process.env.BINANCE_BASE_URL;
   private readonly logger = new Logger(BinanceapiService.name);
+
+  constructor(
+    @InjectMetric("binance_http_count") 
+    public counter: Counter<string>,
+    @InjectMetric('binance_http_duration_seconds')
+    private readonly binanceHttpDuration: Histogram<string>,
+  ) {}
 
   /**
    * Busca informa es de gr fico de uma moeda
@@ -30,7 +39,9 @@ export class BinanceapiService {
     timeChart: string,
     limit: string,
   ): Promise<any> {
+    const end = this.binanceHttpDuration.startTimer({ method: 'getChartInfo' });
     try {
+      this.counter.inc({ method: 'getChartInfo' });
       const client = new Spot('', '', { baseURL: this.binanceBaseUrl });
 
       const response = await client.klines(symbol, timeChart, {
@@ -41,6 +52,8 @@ export class BinanceapiService {
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
       return { success: false, message: error.message };
+    } finally{
+      end();
     }
   }
 
@@ -54,7 +67,9 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao buscar ordens
    */
   async getAllOrders(getAllOrdersRequest: GetOrdersRequest): Promise<any> {
+    const end = this.binanceHttpDuration.startTimer({ method: 'getAllOrders' });
     try {
+      this.counter.inc({ method: 'getAllOrders' });
       this.logger.log(`Buscando ordens para ${getAllOrdersRequest.symbol}`);
       const client = new Spot(
         getAllOrdersRequest.apiKey,
@@ -71,6 +86,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao buscar ordens: ${error.message}`,
       );
+    } finally{
+      end();
     }
   }
 
@@ -89,6 +106,8 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao abrir ordem
    */
   async newOrder(newOrder: NewOrder) {
+    const end = this.binanceHttpDuration.startTimer({ method: 'newOrder' });
+    this.counter.inc({ method: 'newOrder' });
     this.logger.log(
       `Pedido de ordem recebido: ${newOrder.symbol}, ${newOrder.side}, ${newOrder.typeOrder}, ${newOrder.price}, ${newOrder.quantity}`,
     );
@@ -135,6 +154,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao abrir ordem: ${error.message}`,
       );
+    } finally {
+      end();
     }
   }
 
@@ -146,7 +167,9 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao cancelar ordem
    */
   async cancelOrder(cancelOrder: CancelOrderRequest) {
+    const end = this.binanceHttpDuration.startTimer({ method: 'cencelOrder' });
     try {
+      this.counter.inc({ method: 'cancelOrder' });
       this.logger.log(
         `Pedido de Cancelamento de Ordem recebido: ${cancelOrder.symbol}, ${cancelOrder.orderId},`,
       );
@@ -171,6 +194,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao cancelar ordem: ${cancelOrder.orderId} : ${error.message}`,
       );
+    } finally {
+      end();
     }
   }
 
@@ -183,6 +208,8 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao cancelar as ordens abertas.
    */
   async cancelOpenOrders(cancelOpenOrdersRequest: CancelOpenOrdersRequest) {
+    this.counter.inc({ method: 'cancelOpenOrders' });
+    const end = this.binanceHttpDuration.startTimer({ method: 'cencelOpenOrders' });
     try {
       const client = new Spot(
         cancelOpenOrdersRequest.apiKey,
@@ -207,6 +234,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao cancelar ordem: ${cancelOpenOrdersRequest.symbol} : ${error.message}`,
       );
+    } finally {
+      end();
     }
   }
 
@@ -218,6 +247,8 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao buscar o pre o de mercado
    */
   async getPriceMarket(symbol: string) {
+    this.counter.inc({ method: 'getPriceMarket' });
+    const end = this.binanceHttpDuration.startTimer({ method: 'getPriceMarket' });
     try {
       const client = new Spot('', '', {
         baseURL: this.binanceBaseUrl,
@@ -233,6 +264,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao obter preço de mercado para ${symbol}: ${error.message}`,
       );
+    } finally {
+      end();
     }
   }
 
@@ -247,6 +280,8 @@ export class BinanceapiService {
    * @throws InternalServerErrorException se houver erro ao verificar a ordem.
    */
   async checkOrder(checkOrder: CheckOrder) {
+    this.counter.inc({ method: 'checkOrder' });
+    const end = this.binanceHttpDuration.startTimer({ method: 'checkOrder' });
     try {
       this.logger.log(
         `Verificando ordem: ${checkOrder.orderId}, ${checkOrder.symbol}`,
@@ -271,6 +306,8 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao verificar a ordem ${checkOrder.orderId} para ${checkOrder.symbol}: ${error.message}`,
       );
+    } finally {
+      end();
     }
   }
 
@@ -284,6 +321,8 @@ export class BinanceapiService {
    */
 
   async checkConnection() {
+    const end = this.binanceHttpDuration.startTimer({ method: 'checkConnection' });
+    this.counter.inc({ method: 'checkConnection' });
     const client = new Spot('', '', { baseURL: this.binanceBaseUrl });
 
     try {
@@ -299,6 +338,8 @@ export class BinanceapiService {
         error: true,
         message: 'Erro ao conectar',
       };
+    } finally {
+      end();
     }
   }
 }

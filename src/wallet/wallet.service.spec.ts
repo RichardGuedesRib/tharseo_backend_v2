@@ -117,7 +117,7 @@ describe('WalletService', () => {
   });
 
   describe('updateWallet', () => {
-    it('should update and return the wallet', async () => {
+    it('deve atualizar e retornar uma wallet', async () => {
       const updated = { ...mockWallet, quantity: '20.0' };
       (prisma.wallet.update as jest.Mock).mockResolvedValue(updated);
 

@@ -259,9 +259,13 @@ export class EngineTharseoService {
           };
 
           if (order.side == 'SELL') {
+            this.logger.warn("ORDER SELL FILLED" , order.id);
             const priceBuy = order.pairOrder?.closePrice;
             const priceSell = order.closePrice;
             const quantity = order.quantity;
+
+
+            this.logger.warn("PRICEBUY, PRICESELL, QUANTITY" , priceBuy, priceSell, quantity);
             
 
             if (priceBuy && priceSell && quantity) {
@@ -272,6 +276,8 @@ export class EngineTharseoService {
               updateOrder.result = String(profit.toFixed(2));
               updateOrder.strategyId = order.strategyId!;
               updateOrder.performance = String(performance.toFixed(2)); 
+
+              this.logger.warn("PRICEORDERUPDATESELL" , updateOrder);
             } else {
               this.logger.warn(
                 'Dados insuficiente para calcular o profit da operação',

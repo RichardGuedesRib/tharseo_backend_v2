@@ -11,9 +11,10 @@ import { AssetModule } from './asset/asset.module';
 import { StrategyModule } from './strategy/strategy.module';
 import { TradeflowModule } from './tradeflow/tradeflow.module';
 import { OrderModule } from './order/order.module';
-import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { EngineTharseoModule } from './engine-tharseo/engine-tharseo.module';
 import { ConfigModule } from '@nestjs/config';
+import { BinanceapiService } from './binance/binanceapi/binanceapi.service';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -32,11 +33,11 @@ import { ConfigModule } from '@nestjs/config';
     StrategyModule,
     TradeflowModule,
     OrderModule,
-    PrometheusModule.register(),
     EngineTharseoModule,
     ConfigModule.forRoot({
       isGlobal: true, 
     }),
+    MetricsModule,
   ],
   controllers: [],
   providers: [],

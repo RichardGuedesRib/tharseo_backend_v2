@@ -101,7 +101,7 @@ describe('WalletController', () => {
   });
 
   describe('remove', () => {
-    it('deve chamar walletService.remove com o ID correto', async () => {
+    it('deve chamar remove com o ID correto', async () => {
       mockWalletService.remove.mockResolvedValue({ success: true });
 
       const resultado = await controller.remove('1');
