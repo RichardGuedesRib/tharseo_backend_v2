@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class HealthController {
   @Get('check')
   check() {
-    return 'Application is up and running';
+    return `# HELP application_health_status Status do aplicativo\n# TYPE application_health_status gauge\napplication_health_status{status="up"} 1\n`;
   }
 }
