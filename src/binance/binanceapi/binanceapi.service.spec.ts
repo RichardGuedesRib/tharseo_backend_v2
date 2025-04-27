@@ -6,6 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Spot } from '@binance/connector';
+import { MetricsModule } from '../../metrics/metrics.module';
 
 jest.mock('@binance/connector', () => {
   return {
@@ -18,6 +19,14 @@ jest.mock('@binance/connector', () => {
   };
 });
 
+const mockCounter = {
+  inc: jest.fn(),
+};
+
+const mockHistogram = {
+  startTimer: jest.fn().mockReturnValue(jest.fn()),
+};
+
 describe('BinanceapiService', () => {
   let service: BinanceapiService;
   const mockLogger = {
@@ -27,7 +36,24 @@ describe('BinanceapiService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BinanceapiService],
+      providers: [
+        BinanceapiService,
+        {
+          provide: MetricsModule,
+          useValue: {
+            mockCounter,
+            mockHistogram,
+          },
+        },
+        {
+          provide: 'PROM_METRIC_BINANCE_HTTP_COUNT',
+          useValue: mockCounter, 
+        },
+        {
+          provide: 'PROM_METRIC_BINANCE_HTTP_DURATION_SECONDS',
+          useValue: mockHistogram,
+        },
+      ],
     })
       .overrideProvider(Logger)
       .useValue(mockLogger)

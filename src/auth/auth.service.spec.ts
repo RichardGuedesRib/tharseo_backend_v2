@@ -7,6 +7,14 @@ import { LoginRequest } from './dtos/login.request';
 import { LoginResponse } from './dtos/login.response';
 import * as bcrypt from 'bcrypt';
 
+const mockCounter = {
+  inc: jest.fn(),
+};
+
+const mockHistogram = {
+  startTimer: jest.fn().mockReturnValue(jest.fn()),
+};
+
 describe('AuthService', () => {
   let service: AuthService;
   let mockUserService: any;
@@ -33,6 +41,14 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: mockJwtService,
         },
+        {
+          provide: 'PROM_METRIC_AUTH_HTTP_COUNT',
+          useValue: mockCounter,
+        },
+        {
+          provide: 'PROM_METRIC_AUTH_HTTP_DURATION_SECONDS',
+          useValue: mockHistogram,
+        },
       ],
     }).compile();
 
@@ -50,8 +66,8 @@ describe('AuthService', () => {
         password: '123456',
         name: 'Test User',
         lastName: 'Example',
-        phone: "11912345678",
-        levelUser: "admin",
+        phone: '11912345678',
+        levelUser: 'admin',
         balance: 1000,
         isActive: true,
       };
@@ -60,10 +76,12 @@ describe('AuthService', () => {
 
       const result = await service.signUp(createUserData);
 
-      expect(mockUserService.createUser).toHaveBeenCalledWith(expect.objectContaining({
-        ...createUserData,
-        password: expect.any(String), // A senha deve ser hasheada
-      }));
+      expect(mockUserService.createUser).toHaveBeenCalledWith(
+        expect.objectContaining({
+          ...createUserData,
+          password: expect.any(String), // A senha deve ser hasheada
+        }),
+      );
       expect(result).toEqual(createUserData);
     });
 
@@ -73,15 +91,17 @@ describe('AuthService', () => {
         password: '123456',
         name: 'Test User',
         lastName: 'Example',
-        phone: "11912345678",
-        levelUser: "admin",
+        phone: '11912345678',
+        levelUser: 'admin',
         balance: 1000,
         isActive: true,
       };
 
       mockUserService.createUser.mockRejectedValue(new Error('Erro de banco'));
 
-      await expect(service.signUp(createUserData)).rejects.toThrow(BadRequestException);
+      await expect(service.signUp(createUserData)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -108,13 +128,17 @@ describe('AuthService', () => {
 
       const result: LoginResponse = await service.signIn(loginRequest);
 
-      expect(mockUserService.getUserByEmail).toHaveBeenCalledWith('test@example.com');
-      expect(mockJwtService.sign).toHaveBeenCalledWith(expect.objectContaining({
-        userId: mockUser.id,
-        username: mockUser.email,
-        levelUser: mockUser.levelUser,
-        isActive: mockUser.isActive,
-      }));
+      expect(mockUserService.getUserByEmail).toHaveBeenCalledWith(
+        'test@example.com',
+      );
+      expect(mockJwtService.sign).toHaveBeenCalledWith(
+        expect.objectContaining({
+          userId: mockUser.id,
+          username: mockUser.email,
+          levelUser: mockUser.levelUser,
+          isActive: mockUser.isActive,
+        }),
+      );
       expect(result).toEqual({
         user: {
           id: mockUser.id,
@@ -138,7 +162,9 @@ describe('AuthService', () => {
 
       mockUserService.getUserByEmail.mockResolvedValue(null);
 
-      await expect(service.signIn(loginRequest)).rejects.toThrow(UnauthorizedException);
+      await expect(service.signIn(loginRequest)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('deve lançar UnauthorizedException quando senha estiver incorreta', async () => {
@@ -160,7 +186,9 @@ describe('AuthService', () => {
 
       mockUserService.getUserByEmail.mockResolvedValue(mockUser);
 
-      await expect(service.signIn(loginRequest)).rejects.toThrow(UnauthorizedException);
+      await expect(service.signIn(loginRequest)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { BinanceapiController } from './binanceapi/binanceapi.controller';
 import { BinanceapiService } from './binanceapi/binanceapi.service';
 import { BinanceWsService } from './binanceapi/binancews.service';
-import { MetricsModule } from 'src/metrics/metrics.module';
+import { MetricsModule } from '../metrics/metrics.module';
 
 @Module({
   imports: [MetricsModule],
