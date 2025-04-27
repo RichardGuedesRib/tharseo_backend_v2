@@ -21,6 +21,6 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/health/check')
       .expect(200)
-      .expect('Application is up and running');
+      .expect(`# HELP application_health_status Status do aplicativo\n# TYPE application_health_status gauge\napplication_health_status{status="up"} 1\n`);
   });
 });
