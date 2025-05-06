@@ -32,4 +32,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/richardguedesrib/tharseo_backend_v2:nest-latest
+          tags: ghcr.io/richardguedesrib/tharseo-backend-v2:nest-latest  
