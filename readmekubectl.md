@@ -44,4 +44,6 @@ Get-Content 'C:\Users\richa\Downloads\temp\secret.yaml' | kubeseal --controller-
 
 kubectl apply -f 'C:\Users\richa\Downloads\temp\sealed-secret.yaml'
 
+!!!!!!!!!!!!!!!!
+
 
