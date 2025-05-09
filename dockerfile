@@ -1,3 +1,4 @@
+
 FROM node:20
 
 WORKDIR /app
@@ -12,8 +13,9 @@ COPY prisma ./prisma
 RUN npm install
 
 
-
 COPY . .
+
+
 
 
 CMD ["npm", "start"]
