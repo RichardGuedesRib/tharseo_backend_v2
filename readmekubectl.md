@@ -42,3 +42,6 @@ kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/latest/
 
 Get-Content 'C:\Users\richa\Downloads\temp\secret.yaml' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > 'C:\Users\richa\Downloads\temp\sealed-secret.yaml'
 
+kubectl apply -f 'C:\Users\richa\Downloads\temp\sealed-secret.yaml'
+
+

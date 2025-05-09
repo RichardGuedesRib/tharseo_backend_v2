@@ -25,25 +25,25 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: tharseo-secret
+                  name: nestjs-secret
                   key: DATABASE_URL
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: tharseo-secret
+                  name: nestjs-secret
                   key: SECRET_KEY
             - name: BINANCE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: tharseo-secret
+                  name: nestjs-secret
                   key: BINANCE_API_KEY
             - name: BINANCE_API_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: tharseo-secret
+                  name: nestjs-secret
                   key: BINANCE_API_SECRET
             - name: BINANCE_BASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: tharseo-secret
+                  name: nestjs-secret
                   key: BINANCE_BASE_URL
