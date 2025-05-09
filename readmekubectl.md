@@ -36,4 +36,9 @@ baixar argo https://github.com/argoproj/argo-cd/releases/latest
 logar: argocd login localhost:56551 --username admin --password admin
 argocd repo add git@github.com:richardguedesrib/tharseo_backend_v2.git --ssh-private-key-path "C:\Users\richa\.ssh\id_rsa_pessoal"
 
+para as variaveis do 
+instalar kubeseal no windows e depois no kube
+kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
+
+Get-Content 'C:\Users\richa\Downloads\temp\secret.yaml' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
 
