@@ -40,5 +40,5 @@ para as variaveis do
 instalar kubeseal no windows e depois no kube
 kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/latest/download/controller.yaml
 
-Get-Content 'C:\Users\richa\Downloads\temp\secret.yaml' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > sealed-secret.yaml
+Get-Content 'C:\Users\richa\Downloads\temp\secret.yaml' | kubeseal --controller-namespace kube-system --controller-name sealed-secrets-controller --format yaml > 'C:\Users\richa\Downloads\temp\sealed-secret.yaml'
 
