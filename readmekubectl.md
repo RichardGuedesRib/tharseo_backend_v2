@@ -46,4 +46,8 @@ kubectl apply -f 'C:\Users\richa\Downloads\temp\sealed-secret.yaml'
 
 !!!!!!!!!!!!!!!!
 
+Configurando o 
+
+
+
 
