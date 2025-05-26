@@ -264,7 +264,7 @@ export class OrderService {
   /**
    * Retorna todos os pedidos com status PENDENTE que n o t m um id de pedido na exchange.
    *
-   * @returns lista de pedidos pendentes sem id de pedido na exchange.
+   * @returns lista de pedidos pendentes sem id de pedido na exchange.dsadsadsadsadsadsadsa
    */
   async getPendingOrdersCreated() {
     const orders = await this.prisma.order.findMany({
