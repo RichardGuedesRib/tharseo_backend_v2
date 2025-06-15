@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '@prisma/client';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class UserService {
@@ -12,10 +14,31 @@ export class UserService {
    *
    * @param data dados do usuario a ser criado
    * @returns um objeto com os dados do usuario, exceto a senha
-   */
-  async createUser(data: Prisma.UserCreateInput) {
-    const newUser = this.prisma.user.create({ data });
-    const { password, ...userWithoutPassword } = await newUser;
+   */ async createUser(data: Prisma.UserCreateInput) {
+    const createdUser = await this.prisma.user.create({data});
+
+    console.warn("Criou usuario com id: ", createdUser);
+
+    
+    const createdCredential = await this.prisma.credential.create({
+      data: {
+        userId: createdUser.id,
+        apiKey: process.env.BINANCE_API_KEY || '',
+        secretKey: process.env.BINANCE_API_SECRET || '',
+        isActive: true,
+      },
+    });
+
+    console.warn("Criou credencial com id: ", createdCredential);
+
+    await this.prisma.user.update({
+      where: { id: createdUser.id },
+      data: {
+        credentialId: createdCredential.id,
+      },
+    });
+
+    const { password, ...userWithoutPassword } = createdUser;
     return userWithoutPassword;
   }
 

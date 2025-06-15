@@ -46,7 +46,7 @@ export class AuthService {
       this.logger.log(`Criando usuario: ${JSON.stringify(data)}`);
       return await this.userService.createUser(data);
     } catch (error) {
-      throw new BadRequestException('Erro ao cadastrar usuário');
+      throw new BadRequestException('Erro ao cadastrar usuário', error.message);
     } finally {
       end();
     }
