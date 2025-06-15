@@ -29,7 +29,13 @@ describe('UserService', () => {
             credential: {
               create: jest.fn(),
             },
-          } as unknown as PrismaService, // 👈 força a tipagem
+            asset: {
+              findMany: jest.fn(),
+            },
+            wallet: {
+              create: jest.fn(),
+            },
+          } as unknown as PrismaService,
         },
       ],
     }).compile();
@@ -62,9 +68,17 @@ describe('UserService', () => {
         credentialId: 'cred-001',
       });
 
+      (prisma.asset.findMany as jest.Mock).mockResolvedValue([
+        { id: 'asset-001', name: 'Bitcoin' },
+        { id: 'asset-002', name: 'Ethereum' },
+      ]);
+
+      (prisma.wallet.create as jest.Mock).mockResolvedValue({});
+
       const result = await service.createUser(inputData);
 
       expect(prisma.user.create).toHaveBeenCalledWith({ data: inputData });
+
       expect(prisma.credential.create).toHaveBeenCalledWith({
         data: {
           userId: mockUser.id,
@@ -73,10 +87,34 @@ describe('UserService', () => {
           isActive: true,
         },
       });
+
       expect(prisma.user.update).toHaveBeenCalledWith({
         where: { id: mockUser.id },
         data: { credentialId: 'cred-001' },
       });
+
+      expect(prisma.asset.findMany).toHaveBeenCalled();
+
+      expect(prisma.wallet.create).toHaveBeenCalledTimes(2);
+      expect(prisma.wallet.create).toHaveBeenCalledWith({
+        data: {
+          userId: mockUser.id,
+          assetId: 'asset-001',
+          quantity: '100',
+          isFavorite: false,
+          isActive: true,
+        },
+      });
+      expect(prisma.wallet.create).toHaveBeenCalledWith({
+        data: {
+          userId: mockUser.id,
+          assetId: 'asset-002',
+          quantity: '100',
+          isFavorite: false,
+          isActive: true,
+        },
+      });
+
       expect(result).toEqual({
         id: mockUser.id,
         email: mockUser.email,

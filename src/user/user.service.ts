@@ -33,6 +33,20 @@ export class UserService {
       },
     });
 
+    const assets = await this.prisma.asset.findMany({});
+
+    assets.forEach(async (asset) => {
+      await this.prisma.wallet.create({
+        data: {
+          userId: createdUser.id,
+          assetId: asset.id,
+          quantity: "100",
+          isFavorite: false,
+          isActive: true
+        },
+      });
+    });
+
     const { password, ...userWithoutPassword } = createdUser;
     return userWithoutPassword;
   }
