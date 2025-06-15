@@ -15,8 +15,8 @@ export class UserService {
    * @param data dados do usuario a ser criado
    * @returns um objeto com os dados do usuario, exceto a senha
    */ async createUser(data: Prisma.UserCreateInput) {
-    const createdUser = await this.prisma.user.create({data});
-    
+    const createdUser = await this.prisma.user.create({ data });
+
     const createdCredential = await this.prisma.credential.create({
       data: {
         userId: createdUser.id,
@@ -35,17 +35,17 @@ export class UserService {
 
     const assets = await this.prisma.asset.findMany({});
 
-    assets.forEach(async (asset) => {
+    for (const asset of assets) {
       await this.prisma.wallet.create({
         data: {
           userId: createdUser.id,
           assetId: asset.id,
-          quantity: "100",
+          quantity: '100',
           isFavorite: false,
-          isActive: true
+          isActive: true,
         },
       });
-    });
+    }
 
     const { password, ...userWithoutPassword } = createdUser;
     return userWithoutPassword;
