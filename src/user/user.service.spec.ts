@@ -24,8 +24,12 @@ describe('UserService', () => {
               create: jest.fn(),
               findUnique: jest.fn(),
               findMany: jest.fn(),
+              update: jest.fn(),
             },
-          },
+            credential: {
+              create: jest.fn(),
+            },
+          } as unknown as PrismaService, // 👈 força a tipagem
         },
       ],
     }).compile();
@@ -49,9 +53,30 @@ describe('UserService', () => {
 
       (prisma.user.create as jest.Mock).mockResolvedValue(mockUser);
 
+      (prisma.credential.create as jest.Mock).mockResolvedValue({
+        id: 'cred-001',
+      });
+
+      (prisma.user.update as jest.Mock).mockResolvedValue({
+        ...mockUser,
+        credentialId: 'cred-001',
+      });
+
       const result = await service.createUser(inputData);
 
       expect(prisma.user.create).toHaveBeenCalledWith({ data: inputData });
+      expect(prisma.credential.create).toHaveBeenCalledWith({
+        data: {
+          userId: mockUser.id,
+          apiKey: process.env.BINANCE_API_KEY || '',
+          secretKey: process.env.BINANCE_API_SECRET || '',
+          isActive: true,
+        },
+      });
+      expect(prisma.user.update).toHaveBeenCalledWith({
+        where: { id: mockUser.id },
+        data: { credentialId: 'cred-001' },
+      });
       expect(result).toEqual({
         id: mockUser.id,
         email: mockUser.email,
@@ -84,7 +109,10 @@ describe('UserService', () => {
 
   describe('getAllUsers', () => {
     it('deve retornar uma lista de usuários', async () => {
-      const users = [mockUser, { ...mockUser, id: 'user-002', email: 'another@example.com' }];
+      const users = [
+        mockUser,
+        { ...mockUser, id: 'user-002', email: 'another@example.com' },
+      ];
       (prisma.user.findMany as jest.Mock).mockResolvedValue(users);
 
       const result = await service.getAllUsers();
@@ -94,7 +122,6 @@ describe('UserService', () => {
     });
   });
 
-  // GET BY ID
   describe('getUserById', () => {
     it('deve retornar um usuário com wallets e credential se encontrado por ID', async () => {
       const userWithRelations = {
@@ -103,7 +130,9 @@ describe('UserService', () => {
         credential: { id: 'cred-001', level: 'admin' },
       };
 
-      (prisma.user.findUnique as jest.Mock).mockResolvedValue(userWithRelations);
+      (prisma.user.findUnique as jest.Mock).mockResolvedValue(
+        userWithRelations,
+      );
 
       const result = await service.getUserById('user-001');
 

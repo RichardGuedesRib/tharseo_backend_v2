@@ -16,9 +16,6 @@ export class UserService {
    * @returns um objeto com os dados do usuario, exceto a senha
    */ async createUser(data: Prisma.UserCreateInput) {
     const createdUser = await this.prisma.user.create({data});
-
-    console.warn("Criou usuario com id: ", createdUser);
-
     
     const createdCredential = await this.prisma.credential.create({
       data: {
@@ -28,8 +25,6 @@ export class UserService {
         isActive: true,
       },
     });
-
-    console.warn("Criou credencial com id: ", createdCredential);
 
     await this.prisma.user.update({
       where: { id: createdUser.id },
