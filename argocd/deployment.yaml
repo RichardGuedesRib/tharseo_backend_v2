@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: nest-backend
-          image: ghcr.io/richardguedesrib/tharseo-backend-v2:nest-b4bc54d
+          image: ghcr.io/richardguedesrib/tharseo-backend-v2:nest-661d713
           ports:
             - containerPort: 3000
           env:
