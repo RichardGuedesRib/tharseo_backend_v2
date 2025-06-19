@@ -3,6 +3,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { LoginRequest } from './dtos/login.request';
+import { JwtModule } from '@nestjs/jwt';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -10,6 +11,12 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        JwtModule.register({
+          secret: 'test-secret',
+          signOptions: { expiresIn: '1h' },
+        }),
+      ],
       controllers: [AuthController],
       providers: [
         {
@@ -18,6 +25,7 @@ describe('AuthController', () => {
             findAll: jest.fn().mockResolvedValue([]),
             signUp: jest.fn(),
             signIn: jest.fn(),
+            changePassword: jest.fn(),
           },
         },
       ],
@@ -119,6 +127,31 @@ describe('AuthController', () => {
       await expect(controller.signIn(loginRequestMock)).rejects.toThrow(
         UnauthorizedException,
       );
+    });
+  });
+
+  describe('changePassword', () => {
+    it('deve alterar a senha do usuário autenticado', async () => {
+      const changePasswordData = {
+        currentPassword: 'currentPassword123',
+        newPassword: 'newPassword123',
+        confirmPassword: 'newPassword123',
+      };
+
+      const mockRequest = {
+        user: { id: 'user-id' },
+      };
+
+      const expectedResult = {
+        message: 'Senha alterada com sucesso',
+      };
+
+      (service.changePassword as jest.Mock).mockResolvedValue(expectedResult);
+
+      const result = await controller.changePassword(mockRequest, changePasswordData);
+
+      expect(result).toEqual(expectedResult);
+      expect(service.changePassword).toHaveBeenCalledWith('user-id', changePasswordData);
     });
   });
 });
