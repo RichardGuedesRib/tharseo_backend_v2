@@ -44,7 +44,7 @@ export class AuthGuard implements CanActivate {
    * @param request Request
    * @returns O token de autentica o se encontrado, caso contr rio undefined.
    */
-  private extractTokenFromHeader(request: Request): string | undefined {
+  private extractTokenFromHeader(request: any): string | undefined {
     const authHeader = request.headers['authorization'];
     if (!authHeader) return undefined;
 

@@ -77,26 +77,40 @@ describe('TradeflowService', () => {
 
   describe('create', () => {
     it('deve criar um novo tradeflow com sucesso', async () => {
-      (strategyService.findOne as jest.Mock).mockResolvedValue({ id: 'strategy-001' });
-      (assetService.findOne as jest.Mock).mockResolvedValue({ id: 'asset-001' });
-      (prisma.tradeflow.create as jest.Mock).mockResolvedValue({ id: 'tradeflow-001', ...createDto });
+      (strategyService.findOne as jest.Mock).mockResolvedValue({
+        id: 'strategy-001',
+      });
+      (assetService.findOne as jest.Mock).mockResolvedValue({
+        id: 'asset-001',
+      });
+      (prisma.tradeflow.create as jest.Mock).mockResolvedValue({
+        id: 'tradeflow-001',
+        ...createDto,
+      });
 
       const result = await service.create(createDto, mockUser);
 
       expect(result).toEqual({ id: 'tradeflow-001', ...createDto });
-      expect(strategyService.findOne).toHaveBeenCalledWith('strategy-001', mockUser);
+      expect(strategyService.findOne).toHaveBeenCalledWith(
+        'strategy-001',
+        mockUser,
+      );
       expect(assetService.findOne).toHaveBeenCalledWith('asset-001');
     });
 
     it('deve lançar NotFoundException se a estratégia não for encontrada', async () => {
       (strategyService.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.create(createDto, mockUser)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createDto, mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('deve lançar NotFoundException se o ativo não for encontrado', async () => {
       (strategyService.findOne as jest.Mock).mockResolvedValue({});
       (assetService.findOne as jest.Mock).mockResolvedValue(null);
-      await expect(service.create(createDto, mockUser)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createDto, mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -120,7 +134,9 @@ describe('TradeflowService', () => {
   describe('findOne', () => {
     it('deve retornar o tradeflow se encontrado', async () => {
       const mockTradeflow = { id: '1', strategy: { userId: mockUser.userId } };
-      (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(mockTradeflow);
+      (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(
+        mockTradeflow,
+      );
 
       const result = await service.findOne('1', mockUser);
 
@@ -130,7 +146,9 @@ describe('TradeflowService', () => {
     it('deve lançar NotFoundException se o tradeflow não for encontrado', async () => {
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.findOne('not-found', mockUser)).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('not-found', mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -143,7 +161,10 @@ describe('TradeflowService', () => {
       };
 
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(tradeflow);
-      (prisma.tradeflow.update as jest.Mock).mockResolvedValue({ id: '1', ...updateDto });
+      (prisma.tradeflow.update as jest.Mock).mockResolvedValue({
+        id: '1',
+        ...updateDto,
+      });
 
       const result = await service.update('1', updateDto, mockUser);
 
@@ -153,7 +174,9 @@ describe('TradeflowService', () => {
     it('deve lançar NotFoundException se o tradeflow não existir', async () => {
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.update('not-found', updateDto, mockUser)).rejects.toThrow(NotFoundException);
+      await expect(
+        service.update('not-found', updateDto, mockUser),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('deve lançar UnauthorizedException se o tradeflow não pertencer ao usuário', async () => {
@@ -164,7 +187,9 @@ describe('TradeflowService', () => {
 
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(tradeflow);
 
-      await expect(service.update('1', updateDto, mockUser)).rejects.toThrow(UnauthorizedException);
+      await expect(service.update('1', updateDto, mockUser)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 
@@ -186,7 +211,9 @@ describe('TradeflowService', () => {
     it('deve lançar NotFoundException se o tradeflow não existir', async () => {
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.remove('not-found', mockUser)).rejects.toThrow(NotFoundException);
+      await expect(service.remove('not-found', mockUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('deve lançar UnauthorizedException se o tradeflow não pertencer ao usuário', async () => {
@@ -197,7 +224,9 @@ describe('TradeflowService', () => {
 
       (prisma.tradeflow.findUnique as jest.Mock).mockResolvedValue(tradeflow);
 
-      await expect(service.remove('1', mockUser)).rejects.toThrow(UnauthorizedException);
+      await expect(service.remove('1', mockUser)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

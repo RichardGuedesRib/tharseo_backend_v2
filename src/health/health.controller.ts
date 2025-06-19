@@ -9,7 +9,6 @@ export class HealthController {
 
   @Get('checkstatus')
   checkOther() {
-    return "Aplications is up!!!";
+    return 'Aplications is up!!!';
   }
-
 }

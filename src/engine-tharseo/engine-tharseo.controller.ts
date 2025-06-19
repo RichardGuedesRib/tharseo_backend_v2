@@ -35,7 +35,7 @@ export class EngineTharseoController {
    *
    * Esta fun o verifica se as ordens abertas est o executadas e atualiza o
    * status delas no banco de dados.
-   * 
+   *
    * @returns nothing
    */
   async checkOrders() {

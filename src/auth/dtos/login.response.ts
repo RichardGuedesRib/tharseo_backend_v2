@@ -7,6 +7,7 @@ export interface LoginResponse {
     name: string;
     lastName: string;
     email: string;
+    phone: string;
     levelUser: string;
     credential?: Credential | null;
     wallet_?: Wallet | null;

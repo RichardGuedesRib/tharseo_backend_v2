@@ -62,20 +62,18 @@ describe('StrategyController', () => {
 
   let consoleErrorSpy: jest.SpyInstance;
   beforeEach(() => {
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation((...args) => {
-      if (args[0]) return;
-    });
+    consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation((...args) => {
+        if (args[0]) return;
+      });
   });
 
   it('strategy controller deve ser instanciado', () => {
     expect(controller).toBeDefined();
   });
 
-  
-
   describe('create', () => {
-   
-
     it('deve criar uma strategy', async () => {
       const strategyExpected = { id: 'strategy-id', ...createStrategyDTO };
       (service.create as jest.Mock).mockResolvedValue(strategyExpected);
@@ -87,7 +85,6 @@ describe('StrategyController', () => {
     });
 
     it('deve retornar um erro se o usuario nao for encontrado', async () => {
-
       (service.create as jest.Mock).mockRejectedValue(
         new NotFoundException('User not found'),
       );
@@ -179,7 +176,11 @@ describe('StrategyController', () => {
       );
       const rejectTokenPayloadMock = { ...tokenPayloadMock, userId: '123' };
       await expect(
-        controller.update('strategy-id', updateStrategyDTO, rejectTokenPayloadMock),
+        controller.update(
+          'strategy-id',
+          updateStrategyDTO,
+          rejectTokenPayloadMock,
+        ),
       ).rejects.toThrow(NotFoundException);
     });
   });

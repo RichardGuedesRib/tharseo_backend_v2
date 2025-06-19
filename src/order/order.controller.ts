@@ -98,5 +98,4 @@ export class OrderController {
     const user = req.user;
     return await this.orderService.cancelOpenOrders(user);
   }
-
 }

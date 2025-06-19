@@ -9,6 +9,7 @@ import { Prisma, User } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { LoginRequest } from './dtos/login.request';
 import { LoginResponse } from './dtos/login.response';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Counter, Histogram } from 'prom-client';
@@ -70,13 +71,14 @@ export class AuthService {
       throw new UnauthorizedException('Email ou senha incorretos');
     }
     const payload = {
+      id: user.id,
       userId: user.id,
       username: user.email,
       levelUser: user.levelUser,
       isActive: user.isActive,
     };
 
-    this.logger.log(`Efetuou login na plataforma: ${JSON.stringify(payload)}`);
+    this.logger.log(`Login realizado: ${JSON.stringify(payload)}`);
 
     end();
     return {
@@ -85,6 +87,7 @@ export class AuthService {
         name: user.name,
         lastName: user.lastName,
         email: user.email,
+        phone: user.phone,
         levelUser: user.levelUser,
         balance: user.balance,
         isActive: user.isActive,
@@ -92,5 +95,47 @@ export class AuthService {
       token: this.jwtService.sign(payload),
       expiresIn: 11200,
     };
+  }
+
+  /**
+   * Altera a senha de um usuário
+   *
+   * @param userId ID do usuário
+   * @param data dados para alteração de senha
+   * @returns confirmação da alteração
+   * @throws BadRequestException caso as senhas não coincidam ou a senha atual esteja incorreta
+   */
+  async changePassword(userId: string, data: ChangePasswordDto) {
+    const end = this.authHttpDuration.startTimer({ method: 'changePassword' });
+    this.counter.inc({ method: 'changePassword' });
+
+    try {
+      if (data.newPassword !== data.confirmPassword) {
+        throw new BadRequestException('Nova senha e confirmação não coincidem');
+      }
+
+      const user = await this.userService.getUserById(userId);
+      if (!user) {
+        throw new BadRequestException('Usuário não encontrado');
+      }
+
+      if (!(await bcrypt.compare(data.currentPassword, user.password))) {
+        throw new BadRequestException('Senha atual incorreta');
+      }
+
+      const hashPassword = await bcrypt.hash(data.newPassword, 10);
+      await this.userService.updateUserPassword(userId, hashPassword);
+
+      this.logger.log(`Senha alterada para o usuário: ${user.email}`);
+
+      return { message: 'Senha alterada com sucesso' };
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Erro ao alterar senha');
+    } finally {
+      end();
+    }
   }
 }

@@ -33,5 +33,5 @@ export const metricsProviders = [
   binanceHttpCountProvider,
   binanceHttpDurationProvider,
   authHttpCountProvider,
-  authHttpDurationProvider
+  authHttpDurationProvider,
 ];

@@ -14,7 +14,12 @@ describe('WalletService', () => {
   let userService: UserService;
   let assetService: AssetService;
 
-  const userPayload: TokenPayload = { userId: 'user-id', levelUser: 'admin', userName: 'alunodsm', isActive: true };
+  const userPayload: TokenPayload = {
+    userId: 'user-id',
+    levelUser: 'admin',
+    userName: 'alunodsm',
+    isActive: true,
+  };
 
   const createWalletDto: CreateWalletDto = {
     assetId: 'asset-id',
@@ -101,18 +106,21 @@ describe('WalletService', () => {
     it('deve lançar uma excessão se um usuário não for encontrado', async () => {
       (userService.getUserById as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.createOrUpdate(createWalletDto, userPayload)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.createOrUpdate(createWalletDto, userPayload),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('deve lançar uma excessão se um ativo nao for encontrado', async () => {
-      (userService.getUserById as jest.Mock).mockResolvedValue({ id: 'user-id', wallets: [] });
+      (userService.getUserById as jest.Mock).mockResolvedValue({
+        id: 'user-id',
+        wallets: [],
+      });
       (assetService.findOne as jest.Mock).mockResolvedValue(null);
 
-      await expect(service.createOrUpdate(createWalletDto, userPayload)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        service.createOrUpdate(createWalletDto, userPayload),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -121,7 +129,9 @@ describe('WalletService', () => {
       const updated = { ...mockWallet, quantity: '20.0' };
       (prisma.wallet.update as jest.Mock).mockResolvedValue(updated);
 
-      const result = await service.updateWallet('wallet-id', { quantity: '20.0' });
+      const result = await service.updateWallet('wallet-id', {
+        quantity: '20.0',
+      });
 
       expect(result).toEqual(updated);
       expect(prisma.wallet.update).toHaveBeenCalledWith({
@@ -171,13 +181,20 @@ describe('WalletService', () => {
       const result = await service.findOne('wallet-id', userPayload);
 
       expect(result).toEqual(mockWallet);
-      expect(prisma.wallet.findUnique).toHaveBeenCalledWith({ where: { id: 'wallet-id' } });
+      expect(prisma.wallet.findUnique).toHaveBeenCalledWith({
+        where: { id: 'wallet-id' },
+      });
     });
 
     it('deve lançar uma excessão se a wallet não pertencer ao usuário', async () => {
-      (prisma.wallet.findUnique as jest.Mock).mockResolvedValue({ ...mockWallet, userId: 'other' });
+      (prisma.wallet.findUnique as jest.Mock).mockResolvedValue({
+        ...mockWallet,
+        userId: 'other',
+      });
 
-      await expect(service.findOne('wallet-id', userPayload)).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('wallet-id', userPayload)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

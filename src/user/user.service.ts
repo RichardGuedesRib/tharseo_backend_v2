@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Inject } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { Prisma } from '@prisma/client';
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 
 @Injectable()
 export class UserService {
@@ -84,5 +82,79 @@ export class UserService {
       include: { wallets: true, credential: true },
     });
     return user;
+  }
+
+  async updateProfile(
+    userId: string,
+    updateUserProfileDto: UpdateUserProfileDto,
+  ) {
+    const currentUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true, phone: true },
+    });
+
+    if (!currentUser) {
+      throw new Error('User not found');
+    }
+
+    const { email, phone } = updateUserProfileDto;
+
+    if (email !== currentUser.email) {
+      const existingUserWithEmail = await this.prisma.user.findUnique({
+        where: { email },
+      });
+      if (existingUserWithEmail) {
+        throw new Error('Email already exists');
+      }
+    }
+
+    if (phone !== currentUser.phone) {
+      const existingUserWithPhone = await this.prisma.user.findUnique({
+        where: { phone },
+      });
+      if (existingUserWithPhone) {
+        throw new Error('Phone already exists');
+      }
+    }
+
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: updateUserProfileDto,
+      select: {
+        id: true,
+        name: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        levelUser: true,
+        balance: true,
+        isActive: true,
+        credentialId: true,
+      },
+    });
+  }
+
+  /**
+   * Atualiza a senha de um usuário
+   *
+   * @param userId ID do usuário
+   * @param hashedPassword Senha já criptografada
+   * @returns Usuário atualizado
+   */
+  async updateUserPassword(userId: string, hashedPassword: string) {
+    return await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+      select: {
+        id: true,
+        name: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        levelUser: true,
+        balance: true,
+        isActive: true,
+      },
+    });
   }
 }

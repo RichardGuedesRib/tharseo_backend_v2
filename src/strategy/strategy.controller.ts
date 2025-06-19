@@ -33,11 +33,13 @@ export class StrategyController {
     try {
       return await this.strategyService.create(createStrategyDto, req.user);
     } catch (err) {
-      console.error('Erro ao criar estratégia:', err.response || err.message || err);
+      console.error(
+        'Erro ao criar estratégia:',
+        err.response || err.message || err,
+      );
       throw err;
     }
   }
-  
 
   @Get()
   @UseGuards(AuthGuard)
@@ -90,6 +92,4 @@ export class StrategyController {
     const user = req.user;
     return await this.strategyService.update(id, updateStrategyDto, user);
   }
-
- 
 }

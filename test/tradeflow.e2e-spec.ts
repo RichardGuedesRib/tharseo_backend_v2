@@ -91,9 +91,9 @@ describe('TradeflowController (e2e)', () => {
 
   describe('Create Tradeflow (e2e) - POST /v1/tradeflow', () => {
     it('deve criar uma nova automação com sucesso', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -122,9 +122,9 @@ describe('TradeflowController (e2e)', () => {
           if (args[0]?.includes?.('JWT Verification Error')) return;
         });
 
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -144,8 +144,8 @@ describe('TradeflowController (e2e)', () => {
     });
 
     it('deve retornar 404 se o asset nao for encontrado', async () => {
-      let token = await getToken();
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: 'asset-id-invalido',
@@ -166,8 +166,8 @@ describe('TradeflowController (e2e)', () => {
     });
 
     it('deve retornar 404 se o strategy nao for encontrado', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -188,8 +188,8 @@ describe('TradeflowController (e2e)', () => {
     });
 
     it('deve retornar 404 se o strategy nao for encontrado', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -212,9 +212,9 @@ describe('TradeflowController (e2e)', () => {
 
   describe('FindAllTradeflows (e2e) - GET /v1/tradeflow', () => {
     it('deve retornar uma lista de tradeflows do usuario', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -237,7 +237,7 @@ describe('TradeflowController (e2e)', () => {
     });
 
     it('deve retornar uma lista vazia caso o usuario não tenha tradeflows', async () => {
-      let token = await getToken();
+      const token = await getToken();
 
       const responseGet = await request(app.getHttpServer())
         .get('/v1/tradeflow')
@@ -250,9 +250,9 @@ describe('TradeflowController (e2e)', () => {
 
   describe('FindOneTradeflow (e2e) - GET /v1/tradeflow/:id', () => {
     it('deve retornar um tradeflow pelo id de um usuario', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -276,9 +276,9 @@ describe('TradeflowController (e2e)', () => {
     });
 
     it('deve retornar NotFound se o tradeflow nao for encontrado', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -301,13 +301,12 @@ describe('TradeflowController (e2e)', () => {
       expect(responseGet.body).toHaveProperty('error');
       expect(responseGet.body).toHaveProperty('statusCode');
       expect(responseGet.body.message).toBe('TradeFlow not found');
-      
     });
 
     it('deve retornar Unauthorized se o token nao for encontrado ou for inválido', async () => {
-      let token = await getToken();
-      let asset = await getAsset(token);
-      let strategy = await getStrategy(token);
+      const token = await getToken();
+      const asset = await getAsset(token);
+      const strategy = await getStrategy(token);
 
       const createdTradeflow = {
         assetId: asset.id,
@@ -330,10 +329,6 @@ describe('TradeflowController (e2e)', () => {
       expect(responseGet.body).toHaveProperty('error');
       expect(responseGet.body).toHaveProperty('statusCode');
       expect(responseGet.body.message).toBe('Invalid Token');
-      
     });
-
   });
-
-  
 });

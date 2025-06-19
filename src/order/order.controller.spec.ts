@@ -188,8 +188,12 @@ describe('OrderController', () => {
     });
 
     it('deve retornar um NotFoundException se o usuario nao for encontrado', async () => {
-      (service.cancelOpenOrders as jest.Mock).mockRejectedValue(new NotFoundException('User not found'));
-      await expect(service.cancelOpenOrders(tokenPayloadMock)).rejects.toThrow(NotFoundException);
+      (service.cancelOpenOrders as jest.Mock).mockRejectedValue(
+        new NotFoundException('User not found'),
+      );
+      await expect(service.cancelOpenOrders(tokenPayloadMock)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

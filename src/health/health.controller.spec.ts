@@ -20,14 +20,16 @@ describe('HealthController', () => {
   describe('check', () => {
     it('deve retornar que o servidor está operacional', () => {
       const result = controller.check();
-      expect(result).toEqual(`# HELP application_health_status Status do aplicativo\n# TYPE application_health_status gauge\napplication_health_status{status="up"} 1\n`);
+      expect(result).toEqual(
+        `# HELP application_health_status Status do aplicativo\n# TYPE application_health_status gauge\napplication_health_status{status="up"} 1\n`,
+      );
     });
 
     it('deve retornar um InternalServerErrorException indicando que não está operacional', () => {
       jest.spyOn(controller, 'check').mockImplementation(() => {
         throw new InternalServerErrorException();
       });
-  
+
       try {
         controller.check();
       } catch (error) {

@@ -47,7 +47,7 @@ describe('WalletController', () => {
     it('deve chamar walletService.createOrUpdate com os parâmetros corretos', async () => {
       const dto: CreateWalletDto = {
         assetId: 'asset1',
-        quantity: "10",
+        quantity: '10',
         isFavorite: true,
         isActive: true,
       };
@@ -55,7 +55,9 @@ describe('WalletController', () => {
       const carteiraEsperada = { id: 'wallet123', ...dto };
       mockWalletService.createOrUpdate.mockResolvedValue(carteiraEsperada);
 
-      const resultado = await controller.createOrUpdate(dto, { user: mockUser } as any);
+      const resultado = await controller.createOrUpdate(dto, {
+        user: mockUser,
+      } as any);
 
       expect(service.createOrUpdate).toHaveBeenCalledWith(dto, mockUser);
       expect(resultado).toEqual(carteiraEsperada);
@@ -88,7 +90,7 @@ describe('WalletController', () => {
 
   describe('update', () => {
     it('deve chamar walletService.update com os parâmetros corretos', async () => {
-      const dto: UpdateWalletDto = { quantity: "20" };
+      const dto: UpdateWalletDto = { quantity: '20' };
       const carteiraAtualizada = { id: '1', quantity: 20 };
 
       mockWalletService.update.mockResolvedValue(carteiraAtualizada);

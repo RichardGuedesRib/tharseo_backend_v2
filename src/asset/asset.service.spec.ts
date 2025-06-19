@@ -68,12 +68,19 @@ describe('AssetService', () => {
 
   describe('findOne', () => {
     it('deve retornar um ativo pelo id', async () => {
-      const mockAsset = { id: '1', symbol: 'BTC', name: 'Bitcoin', isActive: true };
+      const mockAsset = {
+        id: '1',
+        symbol: 'BTC',
+        name: 'Bitcoin',
+        isActive: true,
+      };
 
       (prisma.asset.findUnique as jest.Mock).mockResolvedValue(mockAsset);
 
       const result = await service.findOne('1');
-      expect(prisma.asset.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(prisma.asset.findUnique).toHaveBeenCalledWith({
+        where: { id: '1' },
+      });
       expect(result).toEqual(mockAsset);
     });
 
@@ -88,19 +95,32 @@ describe('AssetService', () => {
   describe('update', () => {
     it('deve atualizar e retornar o ativo', async () => {
       const data = { name: 'Bitcoin Updated' };
-      const updatedAsset = { id: '1', symbol: 'BTC', name: 'Bitcoin Updated', isActive: true };
+      const updatedAsset = {
+        id: '1',
+        symbol: 'BTC',
+        name: 'Bitcoin Updated',
+        isActive: true,
+      };
 
       (prisma.asset.update as jest.Mock).mockResolvedValue(updatedAsset);
 
       const result = await service.update('1', data);
-      expect(prisma.asset.update).toHaveBeenCalledWith({ where: { id: '1' }, data });
+      expect(prisma.asset.update).toHaveBeenCalledWith({
+        where: { id: '1' },
+        data,
+      });
       expect(result).toEqual(updatedAsset);
     });
   });
 
   describe('remove', () => {
     it('deve remover e retornar o ativo removido', async () => {
-      const removedAsset = { id: '1', symbol: 'BTC', name: 'Bitcoin', isActive: true };
+      const removedAsset = {
+        id: '1',
+        symbol: 'BTC',
+        name: 'Bitcoin',
+        isActive: true,
+      };
 
       (prisma.asset.delete as jest.Mock).mockResolvedValue(removedAsset);
 

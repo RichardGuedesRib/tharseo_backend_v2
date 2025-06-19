@@ -10,8 +10,8 @@ import CancelOrderRequest from '../dto/orders/cancel.order.request';
 import GetOrdersRequest from '../dto/market/get.all.orders.request';
 import CancelOpenOrdersRequest from '../dto/orders/cancel.open.order.request';
 import { CheckOrder } from '../dto/orders/check-order.request';
-import { InjectMetric } from "@willsoto/nestjs-prometheus";
-import { Counter, Histogram } from "prom-client";
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Counter, Histogram } from 'prom-client';
 
 @Injectable()
 export class BinanceapiService {
@@ -19,7 +19,7 @@ export class BinanceapiService {
   private readonly logger = new Logger(BinanceapiService.name);
 
   constructor(
-    @InjectMetric("binance_http_count") 
+    @InjectMetric('binance_http_count')
     public counter: Counter<string>,
     @InjectMetric('binance_http_duration_seconds')
     private readonly binanceHttpDuration: Histogram<string>,
@@ -52,7 +52,7 @@ export class BinanceapiService {
     } catch (error) {
       console.error('Erro ao buscar dados do gráfico:', error);
       return { success: false, message: error.message };
-    } finally{
+    } finally {
       end();
     }
   }
@@ -86,7 +86,7 @@ export class BinanceapiService {
       throw new InternalServerErrorException(
         `Erro ao buscar ordens: ${error.message}`,
       );
-    } finally{
+    } finally {
       end();
     }
   }
@@ -209,7 +209,9 @@ export class BinanceapiService {
    */
   async cancelOpenOrders(cancelOpenOrdersRequest: CancelOpenOrdersRequest) {
     this.counter.inc({ method: 'cancelOpenOrders' });
-    const end = this.binanceHttpDuration.startTimer({ method: 'cencelOpenOrders' });
+    const end = this.binanceHttpDuration.startTimer({
+      method: 'cencelOpenOrders',
+    });
     try {
       const client = new Spot(
         cancelOpenOrdersRequest.apiKey,
@@ -248,7 +250,9 @@ export class BinanceapiService {
    */
   async getPriceMarket(symbol: string) {
     this.counter.inc({ method: 'getPriceMarket' });
-    const end = this.binanceHttpDuration.startTimer({ method: 'getPriceMarket' });
+    const end = this.binanceHttpDuration.startTimer({
+      method: 'getPriceMarket',
+    });
     try {
       const client = new Spot('', '', {
         baseURL: this.binanceBaseUrl,
@@ -321,7 +325,9 @@ export class BinanceapiService {
    */
 
   async checkConnection() {
-    const end = this.binanceHttpDuration.startTimer({ method: 'checkConnection' });
+    const end = this.binanceHttpDuration.startTimer({
+      method: 'checkConnection',
+    });
     this.counter.inc({ method: 'checkConnection' });
     const client = new Spot('', '', { baseURL: this.binanceBaseUrl });
 

@@ -18,12 +18,14 @@ export let prisma: PrismaService;
  * deletando todos os usuários existentes.
  */
 export const setupE2ETest = async () => {
-
-  process.env.DATABASE_URL = 'postgresql://postgres:root@localhost:5432/test_db';
-
+  process.env.DATABASE_URL =
+    'postgresql://postgres:root@localhost:5432/test_db';
 
   try {
-    execSync('npx dotenv -e .env.test -- npx prisma db push --schema=prisma/schema.prisma', { stdio: 'inherit' });
+    execSync(
+      'npx dotenv -e .env.test -- npx prisma db push --schema=prisma/schema.prisma',
+      { stdio: 'inherit' },
+    );
   } catch (error) {
     console.error('Erro ao rodar o comando prisma db push:', error);
     throw error;

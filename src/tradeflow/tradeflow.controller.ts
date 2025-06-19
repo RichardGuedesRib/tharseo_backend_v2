@@ -62,11 +62,11 @@ export class TradeflowController {
   async findOne(@Param('id') id: string, @Request() req) {
     const user = req.user;
     const tradeflow = await this.tradeflowService.findOne(id, user);
-  
+
     if (!tradeflow) {
       throw new NotFoundException('Tradeflow não encontrado');
     }
-  
+
     return tradeflow;
   }
 

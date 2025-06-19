@@ -35,7 +35,7 @@ import { MetricsModule } from './metrics/metrics.module';
     OrderModule,
     EngineTharseoModule,
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
     }),
     MetricsModule,
   ],

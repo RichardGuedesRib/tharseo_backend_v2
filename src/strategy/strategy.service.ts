@@ -32,7 +32,7 @@ export class StrategyService {
     if (!getUser) {
       throw new NotFoundException('User not found');
     }
-    
+
     const strategy = await this.prisma.strategy.create({
       data: { ...createStrategyDto, userId: user.userId },
     });

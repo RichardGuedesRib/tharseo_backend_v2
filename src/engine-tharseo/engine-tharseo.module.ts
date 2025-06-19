@@ -8,7 +8,13 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [DatabaseModule, BinanceModule, OrderModule, ScheduleModule.forRoot(), ConfigModule,],
+  imports: [
+    DatabaseModule,
+    BinanceModule,
+    OrderModule,
+    ScheduleModule.forRoot(),
+    ConfigModule,
+  ],
   providers: [EngineTharseoService],
   exports: [EngineTharseoService],
   controllers: [EngineTharseoController],

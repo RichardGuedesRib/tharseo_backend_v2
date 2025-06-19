@@ -21,7 +21,7 @@ describe('UserController', () => {
         },
       ],
     })
-      .overrideGuard(AuthGuard) 
+      .overrideGuard(AuthGuard)
       .useValue({
         canActivate: () => true,
       })
@@ -37,7 +37,7 @@ describe('UserController', () => {
   it('getAllUsers deve retornar dois usuários', async () => {
     const mockUsers = [
       {
-        id: "abc",
+        id: 'abc',
         name: 'Usuário 1',
         lastName: 'Sobrenome 1',
         email: 'user1@teste.com',
@@ -46,10 +46,10 @@ describe('UserController', () => {
         levelUser: 'admin',
         balance: 100,
         isActive: true,
-        credentialId: null
+        credentialId: null,
       },
       {
-        id: "abc2",
+        id: 'abc2',
         name: 'Usuário 2',
         lastName: 'Sobrenome 2',
         email: 'user2@teste.com',
@@ -58,13 +58,15 @@ describe('UserController', () => {
         levelUser: 'user',
         balance: 50,
         isActive: false,
-        credentialId: null
+        credentialId: null,
       },
     ];
-  
-    jest.spyOn(controller['userService'], 'getAllUsers').mockResolvedValueOnce(mockUsers);
-  
+
+    jest
+      .spyOn(controller['userService'], 'getAllUsers')
+      .mockResolvedValueOnce(mockUsers);
+
     const result = await controller.getAllUsers();
     expect(result).toHaveLength(2);
-    });
+  });
 });

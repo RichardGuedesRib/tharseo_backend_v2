@@ -144,10 +144,10 @@ describe('OrderService', () => {
               updateMany: jest.fn(),
               delete: jest.fn(),
             },
-            strategy:{
+            strategy: {
               findFirst: jest.fn(),
               update: jest.fn(),
-            }
+            },
           },
         },
       ],
@@ -414,9 +414,9 @@ describe('OrderService', () => {
   describe('updateOrderFromCheckExchange', () => {
     it('deve atualizar a ordem e a estratégia se order tiver result, strategyId e performance', async () => {
       const updateOrderMock: UpdateOrderDto = {
-        result: "100",
+        result: '100',
         strategyId: 'strategy-id',
-        performance: "20",
+        performance: '20',
         status: 'FECHADA',
       };
 
@@ -429,8 +429,8 @@ describe('OrderService', () => {
 
       const updatedStrategy = {
         ...existingStrategy,
-        profit: '300', 
-        performance: '70', 
+        profit: '300',
+        performance: '70',
       };
 
       (prisma.order.update as jest.Mock).mockResolvedValue(undefined);
@@ -440,8 +440,8 @@ describe('OrderService', () => {
       (prisma.strategy.update as jest.Mock).mockResolvedValue(updatedStrategy);
 
       const loggerMock = { log: jest.fn() };
-      
-      (service as any).logger = loggerMock; 
+
+      (service as any).logger = loggerMock;
 
       await service.updateOrderFromCheckExchange('order-id', updateOrderMock);
 
@@ -475,23 +475,23 @@ describe('OrderService', () => {
 
   describe('cancelOpenOrders', () => {
     it('deve cancelar ordens abertas do usuário e atualizar o status para CANCELADO', async () => {
-  
-  
       const mockSymbols = [
         { asset: { symbol: 'BTCUSDT' } },
         { asset: { symbol: 'ETHUSDT' } },
       ];
-  
+
       (userService.getUserById as jest.Mock).mockResolvedValue(mockUser);
       (prisma.order.findMany as jest.Mock).mockResolvedValue(mockSymbols);
-      (binanceApiService.cancelOpenOrders as jest.Mock).mockResolvedValue(undefined);
+      (binanceApiService.cancelOpenOrders as jest.Mock).mockResolvedValue(
+        undefined,
+      );
       (prisma.order.updateMany as jest.Mock).mockResolvedValue({ count: 2 });
-  
+
       const loggerMock = { log: jest.fn() };
       (service as any).logger = loggerMock;
-  
+
       const response = await service.cancelOpenOrders(tokenPayloadMock);
-  
+
       expect(userService.getUserById).toHaveBeenCalledWith('user-123');
       expect(prisma.order.findMany).toHaveBeenCalledWith({
         where: {
@@ -507,7 +507,7 @@ describe('OrderService', () => {
         },
         distinct: ['assetId'],
       });
-  
+
       expect(binanceApiService.cancelOpenOrders).toHaveBeenCalledTimes(2);
       expect(binanceApiService.cancelOpenOrders).toHaveBeenCalledWith({
         apiKey: 'mock-api-key',
@@ -519,7 +519,7 @@ describe('OrderService', () => {
         apiSecret: 'mock-secret-key',
         symbol: 'ETHUSDT',
       });
-  
+
       expect(prisma.order.updateMany).toHaveBeenCalledWith({
         where: {
           status: 'PENDENTE',
@@ -529,19 +529,20 @@ describe('OrderService', () => {
           status: 'CANCELADO',
         },
       });
-  
+
       expect(loggerMock.log).toHaveBeenCalledWith(
-        expect.stringContaining('Pedido de cancelamento de ordens em abertas recebeido'),
+        expect.stringContaining(
+          'Pedido de cancelamento de ordens em abertas recebeido',
+        ),
       );
       expect(loggerMock.log).toHaveBeenCalledWith(
         expect.stringContaining('Ordens canceladas para o usuário'),
       );
-  
+
       expect(response).toEqual({
         success: true,
         message: 'Ordens canceladas com sucesso',
       });
     });
   });
-  
 });

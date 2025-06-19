@@ -9,7 +9,7 @@ export class BinanceapiController {
   private readonly apiKey = process.env.BINANCE_API_KEY;
   private readonly apiSecret = process.env.BINANCE_API_SECRET;
 
-  @Get("check")
+  @Get('check')
   /**
    * Verifica se a conex o com a API da Binance est  OK.
    *
@@ -18,6 +18,4 @@ export class BinanceapiController {
   async check() {
     return this.binanceapiService.checkConnection();
   }
-
-  
 }

@@ -1,5 +1,10 @@
 import * as request from 'supertest';
-import { setupE2ETest, cleanupE2ETest, app, prisma } from './helpers/test-utils';
+import {
+  setupE2ETest,
+  cleanupE2ETest,
+  app,
+  prisma,
+} from './helpers/test-utils';
 
 jest.setTimeout(60000);
 
@@ -15,7 +20,7 @@ describe('AuthController (e2e)', () => {
   beforeEach(async () => {
     await prisma.user.deleteMany();
   });
-  
+
   afterEach(async () => {
     await prisma.user.deleteMany();
   });
@@ -142,7 +147,6 @@ describe('AuthController (e2e)', () => {
         .post('/auth/signup')
         .send(userData)
         .expect(201);
-
 
       const loginRequest = {
         email: 'dsm@example.com',

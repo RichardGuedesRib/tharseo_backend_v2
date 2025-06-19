@@ -47,7 +47,7 @@ describe('BinanceapiService', () => {
         },
         {
           provide: 'PROM_METRIC_BINANCE_HTTP_COUNT',
-          useValue: mockCounter, 
+          useValue: mockCounter,
         },
         {
           provide: 'PROM_METRIC_BINANCE_HTTP_DURATION_SECONDS',

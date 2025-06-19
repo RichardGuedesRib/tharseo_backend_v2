@@ -29,7 +29,7 @@ export class BinanceWsService implements OnModuleInit, OnModuleDestroy {
 
   onModuleDestroy() {
     if (this.wsTicker && typeof this.wsTicker.close === 'function') {
-      this.wsTicker.close(); 
+      this.wsTicker.close();
     }
   }
 

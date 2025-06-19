@@ -59,11 +59,11 @@ export class CreateOrderDto {
   idOrderExchange: string;
 
   @IsString()
-  result: string
+  result: string;
 
   @IsString()
-  strategyId: string
+  strategyId: string;
 
   @IsString()
-  performance: string
+  performance: string;
 }

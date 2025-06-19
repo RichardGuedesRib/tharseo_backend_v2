@@ -92,7 +92,9 @@ describe('AssetController', () => {
       assetServiceMock.findOne.mockResolvedValue(mockAsset);
       assetServiceMock.update.mockResolvedValue(updated);
 
-      const result = await controller.update('1', { name: 'Atualizado' } as any);
+      const result = await controller.update('1', {
+        name: 'Atualizado',
+      } as any);
       expect(result).toEqual(updated);
       expect(service.findOne).toHaveBeenCalledWith('1');
       expect(service.update).toHaveBeenCalledWith('1', { name: 'Atualizado' });

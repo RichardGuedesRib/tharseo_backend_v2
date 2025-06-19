@@ -18,11 +18,11 @@ describe('BinanceapiController', () => {
         },
       ],
     })
-    .overrideGuard(AuthGuard)
-    .useValue({
-      canActivate: () => true,
-    })
-    .compile();
+      .overrideGuard(AuthGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      .compile();
 
     controller = module.get<BinanceapiController>(BinanceapiController);
   });

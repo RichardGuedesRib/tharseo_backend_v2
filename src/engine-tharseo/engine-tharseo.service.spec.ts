@@ -127,7 +127,7 @@ describe('EngineTharseoService', () => {
           useValue: {
             get: jest.fn((key: string) => {
               const config = {
-                'some.key': 'some_value', 
+                'some.key': 'some_value',
               };
               return config[key];
             }),
@@ -188,7 +188,7 @@ describe('EngineTharseoService', () => {
 
       const orderCreatedMock = {
         assetId: tradeflowsActiveMock[0].assetId,
-        userId:  tradeflowsActiveMock[0].strategy.userId,
+        userId: tradeflowsActiveMock[0].strategy.userId,
         openDate: expect.any(Date),
         closeDate: expect.any(Date),
         openPrice: '100.00',
@@ -205,39 +205,46 @@ describe('EngineTharseoService', () => {
 
       const expectedOrder = {
         id: 'order-id-123',
-        ...orderCreatedMock
+        ...orderCreatedMock,
       };
 
-      (orderService.createOnDatabase as jest.Mock).mockResolvedValue(expectedOrder);
-      const createBuyOrder = await orderService.createOnDatabase(orderCreatedMock);
+      (orderService.createOnDatabase as jest.Mock).mockResolvedValue(
+        expectedOrder,
+      );
+      const createBuyOrder =
+        await orderService.createOnDatabase(orderCreatedMock);
       expect(createBuyOrder).toEqual(expectedOrder);
 
       const orderCreatedSellMock = {
         ...orderCreatedMock,
-        side: 'SELL'       
-      }
+        side: 'SELL',
+      };
 
       const expectedOrderSell = {
         id: 'order-id-123',
-        ...orderCreatedSellMock
+        ...orderCreatedSellMock,
       };
-      (orderService.createOnDatabase as jest.Mock).mockResolvedValue(expectedOrderSell);
-      const createSellOrder = await orderService.createOnDatabase(orderCreatedSellMock);
+      (orderService.createOnDatabase as jest.Mock).mockResolvedValue(
+        expectedOrderSell,
+      );
+      const createSellOrder =
+        await orderService.createOnDatabase(orderCreatedSellMock);
       expect(createSellOrder).toEqual(expectedOrderSell);
 
-      
       (orderService.updateIdPairOrder as jest.Mock).mockResolvedValue({
-        id: expectedOrder.id, 
+        id: expectedOrder.id,
         pairOrderId: expectedOrderSell.id,
       });
 
-      const resultUpdateOrder = await orderService.updateIdPairOrder(expectedOrder.id, expectedOrderSell.id);
+      const resultUpdateOrder = await orderService.updateIdPairOrder(
+        expectedOrder.id,
+        expectedOrderSell.id,
+      );
 
       expect(resultUpdateOrder).toEqual({
-        id:expectedOrder.id,
+        id: expectedOrder.id,
         pairOrderId: expectedOrder.id,
       });
-
     });
   });
 });

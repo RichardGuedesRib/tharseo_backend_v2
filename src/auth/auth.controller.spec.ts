@@ -106,15 +106,19 @@ describe('AuthController', () => {
       expect(result.token).toBeDefined();
     });
 
-    it("deve retornar UnauthorizedException se o login falhar", async () => {
+    it('deve retornar UnauthorizedException se o login falhar', async () => {
       const loginRequestMock: LoginRequest = {
         email: 'user@user.com',
         password: '123456',
       };
 
-      (service.signIn as jest.Mock).mockRejectedValue(new UnauthorizedException('Email ou senha incorretos'));
+      (service.signIn as jest.Mock).mockRejectedValue(
+        new UnauthorizedException('Email ou senha incorretos'),
+      );
 
-      await expect(controller.signIn(loginRequestMock)).rejects.toThrow(UnauthorizedException);
+      await expect(controller.signIn(loginRequestMock)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

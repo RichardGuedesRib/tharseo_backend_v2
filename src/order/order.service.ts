@@ -296,7 +296,6 @@ export class OrderService {
    * @param order dados do pedido a serem atualizados.
    */
   async updateOrderFromCheckExchange(id: string, order: UpdateOrderDto) {
-
     const { performance, ...orderWithoutPerformance } = order;
 
     await this.prisma.order.update({
@@ -304,8 +303,7 @@ export class OrderService {
       data: orderWithoutPerformance,
     });
 
-
-    if(order.result && order.strategyId && order.performance){
+    if (order.result && order.strategyId && order.performance) {
       const strategy = await this.prisma.strategy.findFirst({
         where: {
           id: order.strategyId,
@@ -313,10 +311,15 @@ export class OrderService {
       });
 
       const newProfit = Number(strategy?.profit!) + Number(order.result);
-      const newPerformance = Number(strategy?.performance!) + Number(order.performance);
+      const newPerformance =
+        Number(strategy?.performance!) + Number(order.performance);
 
-      this.logger.log(`Stragegy ${strategy?.name} possui o novo profit de ${newProfit}`);
-      this.logger.log(`Stragegy ${strategy?.name} possui a nova performance de ${newPerformance}`);
+      this.logger.log(
+        `Stragegy ${strategy?.name} possui o novo profit de ${newProfit}`,
+      );
+      this.logger.log(
+        `Stragegy ${strategy?.name} possui a nova performance de ${newPerformance}`,
+      );
       await this.prisma.strategy.update({
         where: {
           id: order.strategyId,
@@ -326,9 +329,7 @@ export class OrderService {
           performance: String(newPerformance),
         },
       });
-      
     }
-
   }
 
   /**
@@ -352,9 +353,9 @@ export class OrderService {
 
     const symbols = await this.prisma.order.findMany({
       where: {
-        status: "PENDENTE",
+        status: 'PENDENTE',
         asset: {
-          symbol: { not: "USDT" }, 
+          symbol: { not: 'USDT' },
         },
       },
       select: {
@@ -364,16 +365,16 @@ export class OrderService {
           },
         },
       },
-      distinct: ["assetId"], 
+      distinct: ['assetId'],
     });
 
-    const uniqueSymbols = symbols.map(order => order.asset.symbol);
+    const uniqueSymbols = symbols.map((order) => order.asset.symbol);
 
     for (const symbol of uniqueSymbols) {
       const cancelRequest: CancelOpenOrdersRequest = {
         apiKey: userReq.credential!.apiKey,
         apiSecret: userReq.credential!.secretKey,
-        symbol:symbol,
+        symbol: symbol,
       };
 
       await this.binanceApiService.cancelOpenOrders(cancelRequest);
