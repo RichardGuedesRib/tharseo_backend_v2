@@ -42,7 +42,7 @@ describe('AssetController', () => {
     controller = module.get<AssetController>(AssetController);
     service = module.get<AssetService>(AssetService);
 
-    jest.clearAllMocks(); // Limpa mocks a cada teste
+    jest.clearAllMocks(); // Limpa mocks a cada testetesteteste
   });
 
   it('deve instanciar o controller', () => {
